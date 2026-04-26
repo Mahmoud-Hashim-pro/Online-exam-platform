@@ -1,0 +1,24 @@
+{
+  "name": "online-exam-platform",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/super-user418/Online-exam-platform#readme",
+  "bugs": {
+    "url": "https://github.com/super-user418/Online-exam-platform/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/super-user418/Online-exam-platform.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "express": "^5.2.1"
+  }
+}
