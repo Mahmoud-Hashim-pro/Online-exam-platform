@@ -1,0 +1,19 @@
+
+Web applications pages and their URLS.
+The 'Role' field describes who can access its corresponding page(s).
+URLs are shortened for easy access.
+
+
+
+#No.   Page Name.   URL.          Role.      Description.
+_______________________________________________________________________________
+  1    root         /             all        Welcome page.
+  2    profile      /pro          all        Profile Information.
+  3    Login        /log          all        Login form.
+  4    Register     /reg          all        Register form.
+  5    Quiz         /quiz/:id     all        Take a quiz.
+  6    New          /quiz/new     all        Create a new quiz.
+  7    About        /about        all        Product information.
+  8    System       /sys          admin      System statistics and database view.
+  9    404          /*            all        Page not found.
+ 10    History      /box          all        View history.

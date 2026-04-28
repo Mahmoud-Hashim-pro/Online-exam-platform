@@ -1,0 +1,21 @@
+Functionnal Requirements:
+ 1. Users can login and register into the system.
+ 2. Users can required to register using their name, and password.
+ 3. Users can update their profile information. 
+ 4. Users have different access based on their role.
+ 5. Users can create quizes and invite other users.
+ 6. Quizes have varaities of questions. text, MCQ, or TF. Quiz have certain allowed time.
+ 7. Quizes' questions can be left blank or must be answered. Based on the instructor choice.
+ 8. Uerss who have created quizes and monitor their quiz over other users.
+ 9. Users can search for quizes using quiz id or quiz name.
+10. Users can join a quiz N times. N is an integer that is set creator users.
+11. Users can't join quiz with expired time.
+12. System can automatically calculate users grades, or not.
+13. System can allow users to view the model answer for a quiz after the quiz.
+14. System allows users to give feedback for a question in a quiz.
+
+Other Functionnal Requirements:
+ 1. System shall automatically follow user default theme (dark/light mode).
+ 2. System shall be responsive to the change of canvas size.
+ 3. System shall be desgined for both mobile and desktop browsers.
+ 4. Ssytem shall follow a clean theme set of fonts, colors, and icons.
