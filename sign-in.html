@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #ffffff;
+      --card:      #f4f4f6;
+      --card-hover:#eaeaef;
+      --border:    rgba(0,0,0,0.08);
+      --border-h:  rgba(0,0,0,0.18);
+      --text:      #111114;
+      --muted:     #666672;
+      --accent:    #5a4ee8;
+      --accent2:   #1aaa88;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #1e1e22;
+        --card:      #313138;
+        --card-hover:#3a3a44;
+        --border:    rgba(255,255,255,0.08);
+        --border-h:  rgba(255,255,255,0.18);
+        --text:      #e8e8ec;
+        --muted:     #8a8a98;
+        --accent:    #7c6ff7;
+        --accent2:   #4fcfae;
+      }
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 520px;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-line {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      margin: 0.5rem auto 0;
+      border-radius: 2px;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.18s, border-color 0.18s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+    .card:hover {
+      background: var(--card-hover);
+      border-color: var(--border-h);
+      transform: translateY(-2px);
+    }
+    .card:hover::before { opacity: 0.06; }
+    .card:active { transform: translateY(0); }
+
+    .icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .icon-wrap svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    @media (prefers-color-scheme: light) {
+      .icon-wrap { background: rgba(0,0,0,0.05); }
+    }
+
+    /* accent colour variants */
+    .card.green .icon-wrap svg  { stroke: var(--accent2); }
+    .card.red   .icon-wrap svg  { stroke: #f27474; }
+    .card.amber .icon-wrap svg  { stroke: #f2c46f; }
+
+    .card-text { position: relative; z-index: 1; }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .card-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="header">
+    <div class="logo">Quizer</div>
+    <div class="logo-line"></div>
+  </header>
+
+  <main class="grid">
+
+    <!-- Sign out -->
+    <a href="/signout" class="card red">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Sign out</div>
+        <div class="card-desc">Sign out from your account</div>
+      </div>
+    </a>
+
+    <!-- Search -->
+    <a href="/search" class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Search</div>
+        <div class="card-desc">Search and join a quiz</div>
+      </div>
+    </a>
+
+    <!-- History (was "About" with database icon) -->
+    <a href="/history" class="card green">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24">
+          <polyline points="12 8 12 12 14 14"/>
+          <path d="M3.05 11a9 9 0 1 0 .5-4"/>
+          <polyline points="3 3 3 7 7 7"/>
+        </svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">History</div>
+        <div class="card-desc">View your past quizzes</div>
+      </div>
+    </a>
+
+    <!-- Create -->
+    <a href="/create" class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Create</div>
+        <div class="card-desc">Create a new quiz</div>
+      </div>
+    </a>
+
+    <!-- About -->
+    <a href="/about" class="card amber">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">About</div>
+        <div class="card-desc">View website information</div>
+      </div>
+    </a>
+
+    <!-- Profile -->
+    <a href="/profile" class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Profile</div>
+        <div class="card-desc">View your profile</div>
+      </div>
+    </a>
+
+  </main>
+
+</div>
+
+</body>
+</html>
