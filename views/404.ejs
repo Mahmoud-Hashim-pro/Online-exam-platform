@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                position: fixed;
+                display: flex;
+                width: 100%;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .header {
+                display: flex;
+                gap: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>404!</h1>
+            <div>
+                <p><b><%= page %></b> page doesn't exist on this website.</p>
+                <a href="/"><label>Go to main</label></a>
+            </div>
+        </div>
+    </body>
+</html>

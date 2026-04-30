@@ -9,12 +9,12 @@ Status   #No.   Page Name.   URL.          Role.      Description.
 _______________________________________________________________________________
   [x]      1    root         /             all        Welcome page.
            2    profile      /pro          all        Profile Information.
-           3    Login        /log          all        Login form.
-           4    Register     /reg          all        Register form.
+  [x]      3    Login        /log          all        Login form.
+  [x]      4    Register     /reg          all        Register form.
            5    Quiz         /quiz/:id     all        Take a quiz.
            6    New          /quiz/new     all        Create a new quiz.
-           7    About        /about        all        Product information.
+  [x]      7    About        /about        all        Product information.
            8    System       /sys          admin      System statistics and database view.
-           9    404          /*            all        Page not found.
+  [x]      9    404          /*            all        Page not found.
           10    History      /box          all        View history.
          

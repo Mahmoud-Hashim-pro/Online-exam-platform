@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <style>
+            body {
+                position: fixed;
+                display: flex;
+                height: 100vh;
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .form-wrapper {
+                padding: 36px;
+                background-color: rgba(49, 49, 49, 1);
+                border-radius: 8px;
+                box-shadow: 2px 2px 4px black;
+            }
+
+            .header {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding-bottom: 3em;
+            }
+
+            .header .header-name {
+                color: beige;
+                font-size: 48px;
+            }
+
+            .header .header-line {
+                margin: 10px;
+                width: 54px;
+                height: 2px;
+                background-color: rgba(82, 191, 238, 1);
+            }
+
+            .form {
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            .card {
+                background-color: rgba(36, 36, 36, 1);
+                display: flex;
+                flex-direction: column;
+                align-content: center;
+                padding: 18px;
+                border-radius: 8px;
+                box-shadow: 2px 2px 4px black;
+            }
+
+            .submit-button {
+                background-color: rgb(153, 183, 218);
+                color: black;
+                text-align: center;
+                padding: 10px;
+                transition: background-color 200ms, transform 200ms;
+                cursor: pointer;
+            }
+
+            .submit-button:hover {
+                background-color: rgb(109, 131, 156);
+                transform: translateY(-2px);
+            }
+
+            label {
+                color: beige;
+            }
+
+            button {
+                border-radius: 8px;
+                background-color: transparent;
+                border-color: transparent;
+                color: beige;
+                cursor: inherit
+            }
+
+            input {
+                background-color: transparent;
+                color: white;
+                font-size: 18px;
+                border: none;
+                width: 100%;
+            }
+
+            input:focus {
+                outline: none;
+            }
+        </style>
+        <script>
+            /** TBD
+             * 
+             * Toggle the password visibility and update the
+             * icon accordingly.
+             * 
+             * When `Submit` button is pressed:
+             *  Check if all of the inputs are valid, display an error;
+             *  explaining the issue And where it is.
+             * 
+             *  Clear all enteries.
+             */
+        </script>
+    </head>
+    <body>
+        <div class="form-wrapper">
+            <div class="header">
+                <div class="header-name">Account</div>
+                <div class="header-line"></div>
+            </div>
+            <div class="form">
+                <div class="card">
+                    <label>Username</label>
+                    <input autofocus id="username-field" type="text" placeholder="Insert here"/>
+                </div>
+                <div class="card">
+                    <label>Password</label>
+                    <div style="display: flex; ">
+                        <input id="password-field" type="password" placeholder="Insert here"/>
+                        <!-- TBD; the icon is not properly placed in the middle of its container -->
+                        <div id="password-icon">
+                            <i class="material-icons">visibility_off</i>
+                            <!-- <i class="material-icons">visibility</i> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="submit-button card">
+                    <button>Submit</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html> 
