@@ -12,9 +12,9 @@ _______________________________________________________________________________
   [x]      3    Login        /log          all        Login form.
   [x]      4    Register     /reg          all        Register form.
            5    Quiz         /quiz/:id     all        Take a quiz.
-           6    New          /quiz/new     all        Create a new quiz.
+  [x]      6    New          /quiz/new     all        Create a new quiz.
   [x]      7    About        /about        all        Product information.
            8    System       /sys          admin      System statistics and database view.
   [x]      9    404          /*            all        Page not found.
-          10    History      /box          all        View history.
+  [x]     10    History      /box          all        View history.
          

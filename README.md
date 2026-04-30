@@ -1,7 +1,7 @@
 #Online-exam-platform
 
 # Front:
-Nude.js
+Node.js
 
 # Back
 Express + EJS
