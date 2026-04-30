@@ -1,7 +1,7 @@
 #Online-exam-platform
 
 # Front:
-Vue + Vite
+Nude.js
 
 # Back
 Express + EJS
