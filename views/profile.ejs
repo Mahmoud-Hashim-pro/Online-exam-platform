@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quizer — Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --bg:        #ffffff;
+      --card:      #f4f4f6;
+      --card-hover:#eaeaef;
+      --border:    rgba(0,0,0,0.08);
+      --border-h:  rgba(0,0,0,0.18);
+      --text:      #111114;
+      --muted:     #666672;
+      --accent:    #5a4ee8;
+      --accent2:   #1aaa88;
+      --danger:    #e05252;
+    }
+ 
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #1e1e22;
+        --card:      #313138;
+        --card-hover:#3a3a44;
+        --border:    rgba(255,255,255,0.08);
+        --border-h:  rgba(255,255,255,0.18);
+        --text:      #e8e8ec;
+        --muted:     #8a8a98;
+        --accent:    #7c6ff7;
+        --accent2:   #4fcfae;
+        --danger:    #f27474;
+      }
+    }
+ 
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+ 
+    .page { width: 100%; max-width: 520px; }
+ 
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 2rem;
+    }
+ 
+    .back-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--muted);
+      font-size: 18px; text-decoration: none;
+      transition: background 0.15s; flex-shrink: 0;
+    }
+    .back-btn:hover { background: var(--card-hover); }
+    .page-title { font-size: 1.4rem; font-weight: 600; }
+ 
+    /* ── Skeleton loader ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--card) 25%, var(--card-hover) 50%, var(--card) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+ 
+    .skel-avatar  { width:72px; height:72px; border-radius:50%; flex-shrink:0; }
+    .skel-line    { height:14px; margin-bottom:6px; }
+    .skel-short   { width:60%; }
+    .skel-shorter { width:40%; }
+ 
+    /* ── Avatar ── */
+    .avatar-row { display:flex; align-items:center; gap:16px; margin-bottom:1.4rem; }
+ 
+    .avatar {
+      width:72px; height:72px; border-radius:50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.6rem; font-weight:700; color:#fff;
+      flex-shrink:0; position:relative; cursor:pointer;
+    }
+    .avatar-edit {
+      position:absolute; bottom:0; right:0;
+      width:22px; height:22px;
+      background:var(--bg); border:1.5px solid var(--border-h);
+      border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-size:11px;
+    }
+ 
+    .user-name   { font-size:1.15rem; font-weight:600; margin-bottom:3px; }
+    .user-handle { font-size:0.85rem; color:var(--muted); margin-bottom:3px; }
+    .user-joined { font-size:0.78rem; color:var(--muted); }
+ 
+    /* ── Edit btn ── */
+    .edit-btn {
+      width:100%; padding:10px; border-radius:10px;
+      border:1px solid var(--border-h); background:transparent;
+      color:var(--text); font-family:'DM Sans',sans-serif;
+      font-size:0.9rem; font-weight:500; cursor:pointer;
+      margin-bottom:1.4rem; transition:background 0.15s;
+    }
+    .edit-btn:hover { background:var(--card); }
+ 
+    /* ── Stats ── */
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:10px; margin-bottom:1.6rem;
+    }
+    .stat-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:12px; padding:12px 10px; text-align:center;
+    }
+    .stat-value {
+      font-size:1.4rem; font-weight:600;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .stat-label { font-size:0.72rem; color:var(--muted); margin-top:3px; }
+ 
+    /* ── Section label ── */
+    .section-label {
+      font-size:0.7rem; font-weight:600;
+      letter-spacing:0.07em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:0.6rem;
+    }
+ 
+    /* ── Quiz list ── */
+    .quiz-list {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:14px; overflow:hidden; margin-bottom:1.6rem;
+    }
+    .quiz-item {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px; border-bottom:1px solid var(--border);
+      cursor:pointer; transition:background 0.12s;
+    }
+    .quiz-item:last-child { border-bottom:none; }
+    .quiz-item:hover { background:var(--card-hover); }
+ 
+    .quiz-icon {
+      width:38px; height:38px; border-radius:10px;
+      background:var(--bg); border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; flex-shrink:0;
+    }
+    .quiz-info { flex:1; min-width:0; }
+    .quiz-title {
+      font-size:0.9rem; font-weight:500;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .quiz-meta { font-size:0.75rem; color:var(--muted); margin-top:2px; }
+    .quiz-badge {
+      font-size:0.7rem; font-weight:600;
+      padding:3px 9px; border-radius:99px; flex-shrink:0;
+    }
+    .badge-public  { background:rgba(90,78,232,0.12);  color:var(--accent); }
+    .badge-private { background:rgba(26,170,136,0.12); color:var(--accent2); }
+ 
+    /* ── Empty state ── */
+    .empty {
+      padding:2rem; text-align:center;
+      color:var(--muted); font-size:0.85rem;
+    }
+ 
+    /* ── History list ── */
+    .history-list {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:14px; overflow:hidden; margin-bottom:1.6rem;
+    }
+    .history-item {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px; border-bottom:1px solid var(--border);
+    }
+    .history-item:last-child { border-bottom:none; }
+    .history-icon {
+      width:38px; height:38px; border-radius:50%;
+      background:var(--bg); border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1rem; flex-shrink:0;
+    }
+    .history-info { flex:1; min-width:0; }
+    .history-title { font-size:0.9rem; font-weight:500; }
+    .history-meta  { font-size:0.75rem; color:var(--muted); margin-top:2px; }
+    .history-score { font-size:0.9rem; font-weight:600; color:var(--accent); flex-shrink:0; }
+ 
+    /* ── Sign out ── */
+    .signout-btn {
+      width:100%; padding:11px; border-radius:10px;
+      border:1px solid rgba(224,82,82,0.3); background:transparent;
+      color:var(--danger); font-family:'DM Sans',sans-serif;
+      font-size:0.9rem; font-weight:500; cursor:pointer;
+      margin-bottom:2rem; transition:background 0.15s;
+    }
+    .signout-btn:hover { background:rgba(224,82,82,0.08); }
+ 
+    /* ── Error banner ── */
+    .error-banner {
+      background:rgba(224,82,82,0.1); border:1px solid rgba(224,82,82,0.3);
+      border-radius:10px; padding:12px 14px;
+      color:var(--danger); font-size:0.85rem;
+      margin-bottom:1.2rem; display:none;
+    }
+ 
+    /* ── Edit modal ── */
+    .modal-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.4);
+      display:flex; align-items:flex-end; justify-content:center;
+      z-index:100; opacity:0; pointer-events:none; transition:opacity 0.2s;
+    }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal {
+      width:100%; max-width:520px; background:var(--bg);
+      border-radius:20px 20px 0 0; padding:1.5rem 1.4rem 2rem;
+      transform:translateY(30px); transition:transform 0.25s;
+    }
+    .modal-overlay.open .modal { transform:translateY(0); }
+    .modal-title { font-size:1.1rem; font-weight:600; margin-bottom:1.2rem; }
+    .modal label {
+      display:block; font-size:0.82rem; font-weight:500;
+      margin-bottom:5px; margin-top:12px; color:var(--muted);
+    }
+    .modal input {
+      width:100%; padding:10px 13px;
+      background:var(--card); border:1px solid var(--border);
+      border-radius:10px; color:var(--text);
+      font-family:'DM Sans',sans-serif; font-size:0.9rem;
+      outline:none; transition:border-color 0.15s;
+    }
+    .modal input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(90,78,232,0.1); }
+    .modal-actions { display:flex; gap:10px; margin-top:1.4rem; }
+    .btn-save {
+      flex:1; padding:11px; border-radius:10px; border:none;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#fff; font-family:'DM Sans',sans-serif;
+      font-size:0.9rem; font-weight:600; cursor:pointer;
+    }
+    .btn-cancel {
+      flex:1; padding:11px; border-radius:10px;
+      border:1px solid var(--border-h); background:transparent;
+      color:var(--text); font-family:'DM Sans',sans-serif;
+      font-size:0.9rem; cursor:pointer;
+    }
+ 
+    /* ── Toast ── */
+    .toast {
+      position:fixed; bottom:2rem; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:var(--text); color:var(--bg);
+      padding:10px 20px; border-radius:99px;
+      font-size:0.85rem; font-weight:500;
+      opacity:0; transition:opacity 0.25s, transform 0.25s;
+      pointer-events:none; white-space:nowrap; z-index:200;
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+ 
+    .hidden { display:none !important; }
+  </style>
+</head>
+<body>
+ 
+<div class="page">
+ 
+  <div class="header">
+    <a href="/" class="back-btn">&#8592;</a>
+    <h1 class="page-title">Profile</h1>
+  </div>
+ 
+  <!-- Error banner -->
+  <div class="error-banner" id="error-banner"></div>
+ 
+  <!-- SKELETON -->
+  <div id="skeleton">
+    <div class="avatar-row">
+      <div class="skeleton skel-avatar"></div>
+      <div style="flex:1">
+        <div class="skeleton skel-line skel-short"></div>
+        <div class="skeleton skel-line skel-shorter"></div>
+        <div class="skeleton skel-line" style="width:30%"></div>
+      </div>
+    </div>
+    <div class="skeleton skel-line" style="height:40px;border-radius:10px;margin-bottom:1.4rem"></div>
+    <div class="stats-grid">
+      <div class="skeleton" style="height:70px;border-radius:12px"></div>
+      <div class="skeleton" style="height:70px;border-radius:12px"></div>
+      <div class="skeleton" style="height:70px;border-radius:12px"></div>
+    </div>
+    <div class="skeleton skel-line" style="height:120px;border-radius:14px;margin-bottom:1.6rem"></div>
+    <div class="skeleton skel-line" style="height:100px;border-radius:14px"></div>
+  </div>
+ 
+  <!-- REAL CONTENT -->
+  <div id="profile-content" class="hidden">
+ 
+    <div class="avatar-row">
+      <div class="avatar" onclick="openEdit()">
+        <span id="avatar-initials"></span>
+        <div class="avatar-edit">✏️</div>
+      </div>
+      <div>
+        <div class="user-name"   id="display-name"></div>
+        <div class="user-handle" id="display-handle"></div>
+        <div class="user-joined" id="display-joined"></div>
+      </div>
+    </div>
+ 
+    <button class="edit-btn" onclick="openEdit()">Edit profile</button>
+ 
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-played">—</div>
+        <div class="stat-label">Played</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-created">—</div>
+        <div class="stat-label">Created</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-avg">—</div>
+        <div class="stat-label">Avg score</div>
+      </div>
+    </div>
+ 
+    <div class="section-label">My quizzes</div>
+    <div class="quiz-list" id="quiz-list">
+      <div class="empty">No quizzes yet</div>
+    </div>
+ 
+    <div class="section-label">Recent activity</div>
+    <div class="history-list" id="history-list">
+      <div class="empty">No activity yet</div>
+    </div>
+ 
+    <button class="signout-btn" onclick="signOut()">Sign out</button>
+ 
+  </div>
+</div>
+ 
+<!-- Edit modal -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-title">Edit profile</div>
+    <label>Full name</label>
+    <input type="text" id="edit-name"   maxlength="40">
+    <label>Username</label>
+    <input type="text" id="edit-handle" maxlength="20">
+    <label>Email</label>
+    <input type="text" id="edit-email">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+      <button class="btn-save"   onclick="saveEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
+ 
+<div class="toast" id="toast"></div>
+ 
+<script>
+  // ─────────────────────────────────────────
+  //  CONFIG — غير الـ BASE_URL لو الـ port مختلف
+  // ─────────────────────────────────────────
+  const BASE_URL = 'http://localhost:3000';
+ 
+  // ─────────────────────────────────────────
+  //  HELPERS
+  // ─────────────────────────────────────────
+  function getToken() {
+    return localStorage.getItem('token');
+  }
+ 
+  function authHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getToken()
+    };
+  }
+ 
+  function formatDate(iso) {
+    if (!iso) return '';
+    return 'Joined ' + new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+ 
+  function initials(name) {
+    if (!name) return '?';
+    return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  }
+ 
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+ 
+  function showError(msg) {
+    const b = document.getElementById('error-banner');
+    b.textContent = msg;
+    b.style.display = 'block';
+  }
+ 
+  const ICONS = ['🌍','🔬','📚','📐','🧠','🎯','💡','🏆'];
+  function randomIcon() {
+    return ICONS[Math.floor(Math.random() * ICONS.length)];
+  }
+ 
+  // ─────────────────────────────────────────
+  //  RENDER
+  // ─────────────────────────────────────────
+  function renderUser(user) {
+    document.getElementById('avatar-initials').textContent  = initials(user.name);
+    document.getElementById('display-name').textContent     = user.name || '—';
+    document.getElementById('display-handle').textContent   = '@' + (user.username || user.handle || '');
+    document.getElementById('display-joined').textContent   = formatDate(user.createdAt);
+    document.getElementById('edit-name').value    = user.name || '';
+    document.getElementById('edit-handle').value  = user.username || user.handle || '';
+    document.getElementById('edit-email').value   = user.email || '';
+  }
+ 
+  function renderStats(stats) {
+    document.getElementById('stat-played').textContent  = stats.played  ?? '0';
+    document.getElementById('stat-created').textContent = stats.created ?? '0';
+    document.getElementById('stat-avg').textContent     =
+      stats.avgScore != null ? Math.round(stats.avgScore) + '%' : '—';
+  }
+ 
+  function renderQuizzes(quizzes) {
+    const list = document.getElementById('quiz-list');
+    if (!quizzes || quizzes.length === 0) {
+      list.innerHTML = '<div class="empty">No quizzes yet</div>';
+      return;
+    }
+    list.innerHTML = quizzes.map(q => `
+      <div class="quiz-item" onclick="location.href='/quiz/${q._id || q.id}'">
+        <div class="quiz-icon">${randomIcon()}</div>
+        <div class="quiz-info">
+          <div class="quiz-title">${q.title}</div>
+          <div class="quiz-meta">
+            ${q.questionCount ?? q.questions?.length ?? 0} questions · ${q.plays ?? 0} plays
+          </div>
+        </div>
+        <span class="quiz-badge ${q.isPublic || q.visibility === 'public' ? 'badge-public' : 'badge-private'}">
+          ${q.isPublic || q.visibility === 'public' ? 'Public' : 'Private'}
+        </span>
+      </div>
+    `).join('');
+  }
+ 
+  function renderHistory(history) {
+    const list = document.getElementById('history-list');
+    if (!history || history.length === 0) {
+      list.innerHTML = '<div class="empty">No activity yet</div>';
+      return;
+    }
+    list.innerHTML = history.map(h => `
+      <div class="history-item">
+        <div class="history-icon">${randomIcon()}</div>
+        <div class="history-info">
+          <div class="history-title">${h.quizTitle || h.title}</div>
+          <div class="history-meta">
+            ${new Date(h.playedAt || h.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+            · ${h.totalQuestions ?? '?'} questions
+          </div>
+        </div>
+        <div class="history-score">${h.score}/${h.totalQuestions ?? '?'}</div>
+      </div>
+    `).join('');
+  }
+ 
+  // ─────────────────────────────────────────
+  //  LOAD PROFILE — بيجيب من Express
+  // ─────────────────────────────────────────
+  async function loadProfile() {
+    const token = getToken();
+ 
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+ 
+    try {
+      const [userRes, statsRes, quizzesRes, historyRes] = await Promise.all([
+        fetch(`${BASE_URL}/api/me`,           { headers: authHeaders() }),
+        fetch(`${BASE_URL}/api/me/stats`,     { headers: authHeaders() }),
+        fetch(`${BASE_URL}/api/me/quizzes`,   { headers: authHeaders() }),
+        fetch(`${BASE_URL}/api/me/history`,   { headers: authHeaders() }),
+      ]);
+ 
+      // token منتهي
+      if (userRes.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+ 
+      const user    = await userRes.json();
+      const stats   = statsRes.ok   ? await statsRes.json()   : {};
+      const quizzes = quizzesRes.ok ? await quizzesRes.json() : [];
+      const history = historyRes.ok ? await historyRes.json() : [];
+ 
+      renderUser(user);
+      renderStats(stats);
+      renderQuizzes(quizzes);
+      renderHistory(history);
+ 
+      document.getElementById('skeleton').classList.add('hidden');
+      document.getElementById('profile-content').classList.remove('hidden');
+ 
+    } catch (err) {
+      document.getElementById('skeleton').classList.add('hidden');
+      document.getElementById('profile-content').classList.remove('hidden');
+      showError('Failed to load profile. Check your connection.');
+      console.error(err);
+    }
+  }
+ 
+  // ─────────────────────────────────────────
+  //  EDIT PROFILE
+  // ─────────────────────────────────────────
+  function openEdit()  { document.getElementById('modal').classList.add('open'); }
+  function closeEdit() { document.getElementById('modal').classList.remove('open'); }
+ 
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal')) closeEdit();
+  }
+ 
+  async function saveEdit() {
+    const name   = document.getElementById('edit-name').value.trim();
+    const handle = document.getElementById('edit-handle').value.trim();
+    const email  = document.getElementById('edit-email').value.trim();
+ 
+    if (!name || !handle) { showToast('Name and username are required'); return; }
+ 
+    try {
+      const res = await fetch(`${BASE_URL}/api/me`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ name, username: handle, email })
+      });
+ 
+      if (!res.ok) { showToast('Failed to update profile'); return; }
+ 
+      document.getElementById('display-name').textContent    = name;
+      document.getElementById('display-handle').textContent  = '@' + handle;
+      document.getElementById('avatar-initials').textContent = initials(name);
+ 
+      closeEdit();
+      showToast('Profile updated!');
+    } catch (err) {
+      showToast('Connection error');
+      console.error(err);
+    }
+  }
+ 
+  // ─────────────────────────────────────────
+  //  SIGN OUT
+  // ─────────────────────────────────────────
+  async function signOut() {
+    if (!confirm('Are you sure you want to sign out?')) return;
+    try {
+      await fetch(`${BASE_URL}/api/auth/signout`, {
+        method: 'POST',
+        headers: authHeaders()
+      });
+    } catch (_) {}
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }
+ 
+  // ─────────────────────────────────────────
+  //  INIT
+  // ─────────────────────────────────────────
+  loadProfile();
+</script>
+</body>
+</html>
