@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quizer — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f0f13;
+      --surface:  #18181f;
+      --card:     #1e1e28;
+      --card2:    #232330;
+      --border:   rgba(255,255,255,0.07);
+      --border-h: rgba(255,255,255,0.15);
+      --text:     #e8e8ec;
+      --muted:    #6b6b80;
+      --accent:   #7c6ff7;
+      --accent2:  #4fcfae;
+      --danger:   #f27474;
+      --warn:     #f2c46f;
+      --green:    #4fcfae;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px;
+      min-height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1rem;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.5px;
+    }
+    .sidebar-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      padding-left: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.55rem 0.7rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+      margin-bottom: 2px;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: var(--card); color: var(--text); }
+    .nav-item.active { background: rgba(124,111,247,0.15); color: var(--accent); }
+    .nav-item svg {
+      width: 16px; height: 16px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-section { margin-bottom: 1.2rem; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      max-width: 960px;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+    .page-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .page-desc { font-size: 0.82rem; color: var(--muted); }
+
+    /* ── Stats Grid ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .stat-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem 1rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.3s ease both;
+    }
+    .stat-box:nth-child(1) { animation-delay: 0.05s; }
+    .stat-box:nth-child(2) { animation-delay: 0.10s; }
+    .stat-box:nth-child(3) { animation-delay: 0.15s; }
+    .stat-box:nth-child(4) { animation-delay: 0.20s; }
+
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .stat-box.purple::before { background: var(--accent); }
+    .stat-box.green::before  { background: var(--green); }
+    .stat-box.warn::before   { background: var(--warn); }
+    .stat-box.danger::before { background: var(--danger); }
+
+    .stat-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-box.purple .stat-value { color: var(--accent); }
+    .stat-box.green  .stat-value { color: var(--green);  }
+    .stat-box.warn   .stat-value { color: var(--warn);   }
+    .stat-box.danger .stat-value { color: var(--danger); }
+
+    .stat-change {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .stat-change.up   { color: var(--green); }
+    .stat-change.down { color: var(--danger); }
+
+    /* ── Two Column ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Panel ── */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: fadeUp 0.35s ease both;
+      animation-delay: 0.25s;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+    .panel-action {
+      font-size: 0.72rem;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .panel-action:hover { text-decoration: underline; }
+
+    /* ── DB Table ── */
+    .db-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .db-table thead tr {
+      background: var(--card2);
+    }
+    .db-table th {
+      padding: 0.6rem 1.2rem;
+      text-align: left;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+    .db-table td {
+      padding: 0.7rem 1.2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.82rem;
+    }
+    .db-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .db-table td:first-child { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.72rem; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .badge.active  { background: rgba(79,207,174,0.12); color: var(--green); }
+    .badge.offline { background: rgba(107,107,128,0.15); color: var(--muted); }
+    .badge.live    { background: rgba(242,116,116,0.12); color: var(--danger); }
+
+    /* ── Activity List ── */
+    .activity-list { padding: 0.5rem 0; }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 0.7rem 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+    .activity-item:first-child { border-top: none; }
+
+    .activity-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .activity-dot.purple { background: var(--accent); }
+    .activity-dot.green  { background: var(--green);  }
+    .activity-dot.warn   { background: var(--warn);   }
+    .activity-dot.danger { background: var(--danger); }
+
+    .activity-text { font-size: 0.82rem; color: var(--text); line-height: 1.5; }
+    .activity-time { font-size: 0.7rem; color: var(--muted); }
+
+    /* ── DB Full Table ── */
+    .full-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: fadeUp 0.35s ease both;
+      animation-delay: 0.3s;
+    }
+
+    /* ── Ping indicator ── */
+    .ping {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+    .ping-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      position: relative;
+    }
+    .ping-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: var(--green);
+      opacity: 0.3;
+      animation: pulse 2s infinite;
+    }
+
+    /* ── Search bar in panel ── */
+    .table-search {
+      padding: 0.7rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-search input {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.45rem 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .table-search input:focus { border-color: var(--accent); }
+    .table-search input::placeholder { color: var(--muted); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50%       { transform: scale(1.6); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">Quizer</div>
+  <div class="sidebar-sub">Admin Panel</div>
+
+  <div class="nav-section">
+    <div class="nav-label">Main</div>
+    <a href="/" class="nav-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="/search" class="nav-item">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Quizzes
+    </a>
+    <a href="/history" class="nav-item">
+      <svg viewBox="0 0 24 24"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4"/><polyline points="3 3 3 7 7 7"/></svg>
+      History
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">System</div>
+    <a href="/admin" class="nav-item active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      System
+    </a>
+    <a href="/admin/db" class="nav-item">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Database
+    </a>
+    <a href="/admin/users" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Users
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="/" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Back to Site
+    </a>
+  </div>
+</aside>
+
+<!-- ── Main Content ── -->
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-title">System Overview</div>
+    <div class="page-desc">System statistics and database view &nbsp;·&nbsp; <span class="ping"><span class="ping-dot"></span> Live</span></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-box purple">
+      <div class="stat-label">Total Users</div>
+      <div class="stat-value" id="stat-users">0</div>
+      <div class="stat-change up" id="stat-users-change">—</div>
+    </div>
+    <div class="stat-box green">
+      <div class="stat-label">Total Quizzes</div>
+      <div class="stat-value" id="stat-quizzes">0</div>
+      <div class="stat-change up" id="stat-quizzes-change">—</div>
+    </div>
+    <div class="stat-box warn">
+      <div class="stat-label">Sessions Today</div>
+      <div class="stat-value" id="stat-sessions">0</div>
+      <div class="stat-change" id="stat-sessions-change">—</div>
+    </div>
+    <div class="stat-box danger">
+      <div class="stat-label">Active Now</div>
+      <div class="stat-value" id="stat-active">0</div>
+      <div class="stat-change" id="stat-active-change">—</div>
+    </div>
+  </div>
+
+  <!-- Two Column -->
+  <div class="two-col">
+
+    <!-- Recent Activity -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Recent Activity</span>
+        <a href="#" class="panel-action">View all</a>
+      </div>
+      <div class="activity-list" id="activity-list">
+        <!-- من الـ server -->
+      </div>
+    </div>
+
+    <!-- Quiz Status -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Quiz Status</span>
+        <a href="/search" class="panel-action">Manage</a>
+      </div>
+      <table class="db-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Questions</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="quiz-table-body">
+          <!-- من الـ server -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- DB View -->
+  <div class="full-panel">
+    <div class="panel-header">
+      <span class="panel-title">Database — Users</span>
+      <a href="#" class="panel-action">Export CSV</a>
+    </div>
+    <div class="table-search">
+      <input type="text" id="db-search" placeholder="Filter by name or email..." oninput="filterTable()"/>
+    </div>
+    <table class="db-table" id="db-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Quizzes</th>
+          <th>Joined</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="db-table-body">
+        <!-- من الـ server -->
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<script>
+  // ── بتجيب البيانات من الـ server ─────────────────────────
+  async function loadDashboard() {
+    const res  = await fetch('/api/admin/stats');
+    const data = await res.json();
+
+    // Stats
+    document.getElementById('stat-users').textContent          = data.stats.users;
+    document.getElementById('stat-users-change').textContent   = data.stats.usersChange;
+    document.getElementById('stat-quizzes').textContent        = data.stats.quizzes;
+    document.getElementById('stat-quizzes-change').textContent = data.stats.quizzesChange;
+    document.getElementById('stat-sessions').textContent       = data.stats.sessions;
+    document.getElementById('stat-sessions-change').textContent= data.stats.sessionsChange;
+    document.getElementById('stat-active').textContent         = data.stats.active;
+    document.getElementById('stat-active-change').textContent  = data.stats.activeChange;
+
+    // Activity
+    const actList = document.getElementById('activity-list');
+    actList.innerHTML = '';
+    data.activity.forEach(a => {
+      actList.innerHTML += `
+        <div class="activity-item">
+          <div class="activity-dot ${a.dot}"></div>
+          <div>
+            <div class="activity-text">${a.text}</div>
+            <div class="activity-time">${a.time}</div>
+          </div>
+        </div>`;
+    });
+
+    // Quiz Table
+    const qBody = document.getElementById('quiz-table-body');
+    qBody.innerHTML = '';
+    data.quizzes.forEach(q => {
+      const badge = q.live
+        ? '<span class="badge live">Live</span>'
+        : '<span class="badge offline">Offline</span>';
+      qBody.innerHTML += `
+        <tr>
+          <td>${q.id}</td>
+          <td>${q.name}</td>
+          <td>${q.questions}</td>
+          <td>${badge}</td>
+        </tr>`;
+    });
+
+    // DB Users Table
+    window._allUsers = data.users;
+    renderUsers(data.users);
+  }
+
+  // ── Render Users ──────────────────────────────────────────
+  function renderUsers(list) {
+    const dbBody = document.getElementById('db-table-body');
+    dbBody.innerHTML = '';
+    list.forEach(u => {
+      const badge = u.active
+        ? '<span class="badge active">Active</span>'
+        : '<span class="badge offline">Offline</span>';
+      dbBody.innerHTML += `
+        <tr>
+          <td>#${u.id}</td>
+          <td>${u.name}</td>
+          <td>${u.email}</td>
+          <td>${u.quizzes}</td>
+          <td>${u.joined}</td>
+          <td>${badge}</td>
+        </tr>`;
+    });
+  }
+
+  // ── Filter DB Table ───────────────────────────────────────
+  function filterTable() {
+    const q = document.getElementById('db-search').value.toLowerCase();
+    const filtered = (window._allUsers || []).filter(u =>
+      u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+    );
+    renderUsers(filtered);
+  }
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
