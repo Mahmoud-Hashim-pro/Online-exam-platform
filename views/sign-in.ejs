@@ -237,5 +237,20 @@
   </main>
 </div>
 
+<script type="module">
+  import { initializeApp }        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  const _app  = initializeApp({
+    apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
+    authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
+    projectId:         "online-quiz-and-exam-platform",
+    storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
+    messagingSenderId: "1090034589767",
+    appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
+  });
+  onAuthStateChanged(getAuth(_app), user => {
+    if (!user) window.location.href = '/log';
+  });
+</script>
 </body>
 </html>
