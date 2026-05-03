@@ -108,6 +108,27 @@
     .footer-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
     .footer-link a:hover { text-decoration: underline; }
 
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--muted); font-size: 0.78rem; margin: 4px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Google Button ── */
+    .google-btn {
+      width: 100%; padding: 0.8rem; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .google-btn:hover { background: var(--card-hover, #eaeaef); border-color: var(--border-h); }
+    .google-btn img { width: 18px; height: 18px; }
+
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -178,6 +199,12 @@
 
   </div>
 
+  <div class="divider">or</div>
+  <button class="google-btn" onclick="handleGoogle()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>
+    Continue with Google
+  </button>
+
   <div class="footer-link">
     Already have an account? <a href="/log">Log in</a>
   </div>
@@ -185,8 +212,9 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-  import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { initializeApp }                                          from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, createUserWithEmailAndPassword, updateProfile,
+           GoogleAuthProvider, signInWithPopup }                   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
   // ── Firebase Config — حط البيانات بتاعتك هنا ────────────
   const firebaseConfig = {
@@ -198,8 +226,9 @@
     appId:             "YOUR_APP_ID"
   };
 
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const app      = initializeApp(firebaseConfig);
+  const auth     = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
   // ── Toggle Password ───────────────────────────────────────
   window.togglePass = function(fieldId, iconId) {
@@ -216,7 +245,21 @@
     el.style.display = 'block';
   }
 
-  // ── Register ──────────────────────────────────────────────
+  // ── Save token ────────────────────────────────────────────
+  async function saveAndRedirect(user) {
+    const token = await user.getIdToken();
+    localStorage.setItem('token', token);
+    // حفظ بيانات المستخدم للـ "remember me"
+    localStorage.setItem('user', JSON.stringify({
+      name:  user.displayName,
+      email: user.email,
+      uid:   user.uid,
+      photo: user.photoURL
+    }));
+    window.location.href = '/home';
+  }
+
+  // ── Register with Email ───────────────────────────────────
   window.handleRegister = async function() {
     const username  = document.getElementById('username-field').value.trim();
     const firstname = document.getElementById('firstname-field').value.trim();
@@ -229,7 +272,6 @@
 
     errEl.style.display = 'none';
 
-    // Validation
     if (!username || !firstname || !lastname || !email || !password) {
       showError('Please fill in all fields'); return;
     }
@@ -244,31 +286,33 @@
     btn.textContent = 'Creating account...';
 
     try {
-      // إنشاء الحساب في Firebase
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
-
-      // حفظ الاسم في Firebase profile
       await updateProfile(userCred.user, {
         displayName: `${firstname} ${lastname}`
       });
-
-      // جيب الـ token واحفظه
-      const token = await userCred.user.getIdToken();
-      localStorage.setItem('token', token);
-
-      // روح على الـ home
-      window.location.href = '/home';
+      await saveAndRedirect(userCred.user);
 
     } catch (err) {
       btn.disabled = false;
       btn.textContent = 'Register';
-
       const errors = {
         'auth/email-already-in-use': 'This email is already registered',
         'auth/invalid-email':        'Invalid email address',
-        'auth/weak-password':        'Password is too weak',
+        'auth/weak-password':        'Password is too weak (min 6 chars)',
       };
-      showError(errors[err.code] || 'Registration failed. Try again.');
+      showError(errors[err.code] || err.message);
+    }
+  };
+
+  // ── Register / Login with Google ──────────────────────────
+  window.handleGoogle = async function() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await saveAndRedirect(result.user);
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        showError('Google sign-in failed. Try again.');
+      }
     }
   };
 
@@ -276,6 +320,11 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') window.handleRegister();
   });
+
+  // ── لو المستخدم مسجل قبل كده روح على home ────────────────
+  if (localStorage.getItem('token')) {
+    window.location.href = '/home';
+  }
 </script>
 
 </body>
