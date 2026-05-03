@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quizer — History</title>
+  <title>Quizer â€” History</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,7 +48,7 @@
       flex-direction: column;
     }
 
-    /* ── Top Bar ── */
+    /* â”€â”€ Top Bar â”€â”€ */
     .topbar {
       display: flex;
       align-items: center;
@@ -97,14 +97,14 @@
       background-clip: text;
     }
 
-    /* ── Page ── */
+    /* â”€â”€ Page â”€â”€ */
     .page {
       max-width: 560px;
       margin: 0 auto;
       padding: 1.4rem 1.5rem 3rem;
     }
 
-    /* ── Stats Row ── */
+    /* â”€â”€ Stats Row â”€â”€ */
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -136,7 +136,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* ── Section Title ── */
+    /* â”€â”€ Section Title â”€â”€ */
     .section-title {
       font-size: 0.72rem;
       font-weight: 600;
@@ -146,7 +146,7 @@
       margin-bottom: 10px;
     }
 
-    /* ── History List ── */
+    /* â”€â”€ History List â”€â”€ */
     .history-list {
       display: flex;
       flex-direction: column;
@@ -175,7 +175,7 @@
     }
     .quiz-card:active { transform: translateY(0); }
 
-    /* الشريط الجانبي اللي بيدل على النتيجة */
+    /* Ø§Ù„Ø´Ø±ÙŠØ· Ø§Ù„Ø¬Ø§Ù†Ø¨ÙŠ Ø§Ù„Ù„ÙŠ Ø¨ÙŠØ¯Ù„ Ø¹Ù„Ù‰ Ø§Ù„Ù†ØªÙŠØ¬Ø© */
     .quiz-card::after {
       content: '';
       position: absolute;
@@ -188,7 +188,7 @@
     .quiz-card.win::after  { background: var(--win); }
     .quiz-card.lose::after { background: var(--lose); }
 
-    /* أيقونة نوع الـ quiz */
+    /* Ø£ÙŠÙ‚ÙˆÙ†Ø© Ù†ÙˆØ¹ Ø§Ù„Ù€ quiz */
     .quiz-icon {
       width: 42px;
       height: 42px;
@@ -237,7 +237,7 @@
       color: var(--muted);
     }
 
-    /* ── Empty State ── */
+    /* â”€â”€ Empty State â”€â”€ */
     .empty {flex-direction: column;
       text-align: center;
       padding: 3rem 1rem;
@@ -256,7 +256,7 @@
     .empty-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
     .empty-desc  { font-size: 0.8rem; }
 
-    /* ── Animations ── */
+    /* â”€â”€ Animations â”€â”€ */
     .quiz-card {
       animation: fadeUp 0.3s ease both;
     }
@@ -291,7 +291,7 @@
 
   <div class="page">
 
-    <!-- Stats - الأرقام دي هتيجي من الـ server -->
+    <!-- Stats - Ø§Ù„Ø£Ø±Ù‚Ø§Ù… Ø¯ÙŠ Ù‡ØªÙŠØ¬ÙŠ Ù…Ù† Ø§Ù„Ù€ server -->
     <div class="stats">
       <div class="stat-card">
         <div class="stat-number accent" id="stat-total">0</div>
@@ -311,7 +311,7 @@
     <div class="section-title">Recent Quizzes</div>
 
     <div class="history-list" id="history-list">
-      <!-- الكروت هتتضاف هنا من الـ server -->
+      <!-- Ø§Ù„ÙƒØ±ÙˆØª Ù‡ØªØªØ¶Ø§Ù Ù‡Ù†Ø§ Ù…Ù† Ø§Ù„Ù€ server -->
     </div>
 
     <!-- Empty State -->
@@ -331,5 +331,20 @@
 
   </div>
 
+<script type="module">
+  import { initializeApp }        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  const _app  = initializeApp({
+    apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
+    authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
+    projectId:         "online-quiz-and-exam-platform",
+    storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
+    messagingSenderId: "1090034589767",
+    appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
+  });
+  onAuthStateChanged(getAuth(_app), user => {
+    if (!user) window.location.href = '/log';
+  });
+</script>
 </body>
 </html>
