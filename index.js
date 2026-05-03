@@ -22,12 +22,13 @@ const sharedRenderData = {
 // AUTH MIDDLEWARE — بيحمي الصفحات من غير login
 // ═══════════════════════════════════════════════════════════
 function requireAuth(req, res, next) {
-	// بيتحقق من الـ token في الـ Authorization header
-	const token = req.headers['authorization']?.split(' ')[1]
-		|| req.cookies?.token;
+	// بيقرأ الـ token من الـ cookie
+	const cookieHeader = req.headers['cookie'] || '';
+	const tokenCookie  = cookieHeader.split('; ').find(c => c.startsWith('token='));
+	const token        = tokenCookie?.split('=')[1]
+		|| req.headers['authorization']?.split(' ')[1];
 
 	if (!token) {
-		// لو مفيش token يروح على صفحة الـ login
 		return res.redirect('/log');
 	}
 	next();
