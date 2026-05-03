@@ -322,7 +322,10 @@
   });
 
   // ── لو المستخدم مسجل قبل كده روح على home ────────────────
-  if (localStorage.getItem('token')) {
+  function getCookie(name) {
+    return document.cookie.split('; ').find(r => r.startsWith(name + '='))?.split('=')[1];
+  }
+  if (getCookie('token')) {
     window.location.href = '/home';
   }
 </script>
