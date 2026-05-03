@@ -1,162 +1,210 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <style>
-            body {
-                position: fixed;
-                display: flex;
-                height: 100vh;
-                width: 100%;
-                justify-content: center;
-                align-items: center;
-            }
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= pageTitle %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            .form-wrapper {
-                padding: 36px;
-                background-color: rgba(49, 49, 49, 1);
-                box-shadow: 2px 2px 4px black;
-                border-radius: 8px;
-                
-            }
+    :root {
+      --bg:        #ffffff;
+      --card:      #f4f4f6;
+      --card-hover:#eaeaef;
+      --border:    rgba(0,0,0,0.08);
+      --border-h:  rgba(0,0,0,0.18);
+      --text:      #111114;
+      --muted:     #666672;
+      --accent:    #5a4ee8;
+      --accent2:   #1aaa88;
+      --danger:    #e05252;
+    }
 
-            .header {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding-bottom: 3em;
-            }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #1e1e22;
+        --card:      #313138;
+        --card-hover:#3a3a44;
+        --border:    rgba(255,255,255,0.08);
+        --border-h:  rgba(255,255,255,0.18);
+        --text:      #e8e8ec;
+        --muted:     #8a8a98;
+        --accent:    #7c6ff7;
+        --accent2:   #4fcfae;
+        --danger:    #f27474;
+      }
+    }
 
-            .header .header-name {
-                color: beige;
-                font-size: 48px;
-            }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
 
-            .header .header-line {
-                margin: 10px;
-                width: 54px;
-                height: 2px;
-                background-color: rgba(82, 191, 238, 1);
-            }
+    .page { width: 100%; max-width: 480px; animation: fadeUp 0.3s ease both; }
 
-            .form {
-                display: grid;
-                /* grid-auto-flow: row; */
-                grid-template-columns: 0.7fr 0.7fr;
-                gap: 18px;
-            }
+    .header { text-align: center; margin-bottom: 2rem; }
 
-            .card {
-                background-color: rgba(36, 36, 36, 1);
-                display: flex;
-                flex-direction: column;
-                align-content: center;
-                padding: 18px;
-                border-radius: 8px;
-                box-shadow: 2px 2px 4px black;
-            }
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-            .password-input-wrapper {
-                display: grid;
-            }
+    .logo-line {
+      width: 50px; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      margin: 0.5rem auto 0; border-radius: 2px;
+    }
 
-            .submit-button {
-                background-color: rgb(153, 183, 218);
-                color: black;
-                text-align: center;
-                padding: 10px;
-                transition: background-color 200ms, transform 200ms;
-                cursor: pointer;
-            }
+    .header-sub { font-size: 0.85rem; color: var(--muted); margin-top: 0.6rem; }
 
-            .submit-button:hover {
-                background-color: rgb(109, 131, 156);
-                transform: translateY(-2px);
-            }
+    .form { display: flex; flex-direction: column; gap: 12px; }
 
-            label {
-                color: beige;
-            }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-            button {
-                border-radius: 8px;
-                background-color: transparent;
-                border-color: transparent;
-                cursor: inherit
-            }
+    .field { display: flex; flex-direction: column; gap: 6px; }
 
-            input {
-                background-color: transparent;
-                color: white;
-                font-size: 18px;
-                border: none;
-                width: 100%;
-            }
+    label { font-size: 0.8rem; font-weight: 500; color: var(--muted); }
 
-            input:focus {
-                outline: none;
-            }
-        </style>
-        <script>
-            /** TBD
-             * 
-             * Toggle the password visibility and update the
-             * icon accordingly.
-             * 
-             * When `Submit` button is pressed:
-             *  Check if all of the inputs are valid, display an error;
-             *  explaining the issue And where it is.
-             * 
-             *  Clear all enteries.
-             */
-        </script>
-    </head>
-    <body>
-        <div class="form-wrapper">
-            <div class="header">
-                <div class="header-name">New Account</div>
-                <div class="header-line"></div>
-            </div>
-            <div class="form">
-                <div class="card" style="grid-area: 1 / 1 / span 1 / span 2">
-                    <label>Username</label>
-                    <input autofocus id="username-field" type="text" placeholder="Insert here"/>
-                </div>
-                <div class="card">
-                    <label>First name</label>
-                    <input id="name-field" type="text" placeholder="Insert here"/>
-                </div>
-                <div class="card">
-                    <label>Last name</label>
-                    <input id="name-field" type="text" placeholder="Insert here"/>
-                </div>
-                <div class="card" style="grid-area: 3 / 1 / span 1 / span 2">
-                    <label>Password</label>
-                    <div style="display: flex">
-                        <input id="password-field" type="password" placeholder="Insert here"/>
-                        <!-- TBD; the icon is not properly placed in the middle of its container -->
-                        <div id="password-icon" style="cursor: pointer; display: inline">
-                            <i class="material-icons">visibility_off</i>
-                            <!-- <i class="material-icons">visibility</i> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="grid-area: 4 / 1 / span 1 / span 2">
-                    <label>Ensure password</label>
-                    <div style="display: flex">
-                        <input id="ensure-password-field" type="password" placeholder="Insert here"/>
-                        <!-- TBD; the icon is not properly placed in the middle of its container -->
-                        <div id="password-icon" style="cursor: pointer; display: inline">
-                            <i class="material-icons">visibility_off</i>
-                            <!-- <i class="material-icons">visibility</i> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="card submit-button" style="grid-area: 5 / 2 / span 1 / span 1">
-                    <button>Register</button>
-                </div>
-            </div>
-        </div>
-    </body>
-</html> 
+    input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input::placeholder { color: var(--muted); opacity: 0.6; }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(90,78,232,0.12); }
+
+    .pass-wrap { position: relative; }
+    .pass-wrap input { padding-right: 2.8rem; }
+
+    .pass-toggle {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); padding: 0; display: flex; align-items: center;
+    }
+    .pass-toggle svg {
+      width: 18px; height: 18px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .error-msg { font-size: 0.78rem; color: var(--danger); display: none; margin-top: 2px; }
+
+    .submit-btn {
+      width: 100%; padding: 0.85rem; border-radius: 12px; border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      margin-top: 4px; transition: opacity 0.15s, transform 0.1s;
+    }
+    .submit-btn:hover  { opacity: 0.9; }
+    .submit-btn:active { transform: scale(0.99); }
+
+    .footer-link { text-align: center; font-size: 0.82rem; color: var(--muted); margin-top: 1.2rem; }
+    .footer-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .footer-link a:hover { text-decoration: underline; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <div class="logo"><%= logoName %></div>
+    <div class="logo-line"></div>
+    <div class="header-sub">Create a new account</div>
+  </div>
+
+  <form class="form" action="/reg" method="POST">
+
+    <div class="field">
+      <label for="username-field">Username</label>
+      <input autofocus id="username-field" name="username" type="text" placeholder="Enter username"/>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="firstname-field">First name</label>
+        <input id="firstname-field" name="firstname" type="text" placeholder="First"/>
+      </div>
+      <div class="field">
+        <label for="lastname-field">Last name</label>
+        <input id="lastname-field" name="lastname" type="text" placeholder="Last"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="password-field">Password</label>
+      <div class="pass-wrap">
+        <input id="password-field" name="password" type="password" placeholder="Enter password"/>
+        <button type="button" class="pass-toggle" onclick="togglePass('password-field', this)">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="ensure-password-field">Confirm password</label>
+      <div class="pass-wrap">
+        <input id="ensure-password-field" name="confirm_password" type="password" placeholder="Repeat password"/>
+        <button type="button" class="pass-toggle" onclick="togglePass('ensure-password-field', this)">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <span class="error-msg" id="pass-error">Passwords do not match</span>
+    </div>
+
+    <button type="submit" class="submit-btn" onclick="return validate()">Register</button>
+
+  </form>
+
+  <div class="footer-link">
+    Already have an account? <a href="/log">Log in</a>
+  </div>
+
+</div>
+
+<script>
+  function togglePass(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    btn.style.opacity = input.type === 'text' ? '0.5' : '1';
+  }
+
+  function validate() {
+    const p1 = document.getElementById('password-field').value;
+    const p2 = document.getElementById('ensure-password-field').value;
+    const err = document.getElementById('pass-error');
+    if (p1 !== p2) { err.style.display = 'block'; return false; }
+    err.style.display = 'none';
+    return true;
+  }
+</script>
+
+</body>
+</html>
