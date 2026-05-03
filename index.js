@@ -42,6 +42,13 @@ app.get('/reg', (req, res) => {
 	res.render('register.ejs', sharedRenderData);
 });
 
+// ── Register POST — بيستقبل الـ form ────────────────────
+app.post('/reg', (req, res) => {
+	const { username, firstname, lastname, password, confirm_password } = req.body;
+	// TODO: save to database
+	res.redirect('/home');
+});
+
 // ── About ─────────────────────────────────────────────────
 app.get('/about', (req, res) => {
 	res.render('about.ejs', sharedRenderData);
