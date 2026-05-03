@@ -37,6 +37,11 @@ app.get('/log', (req, res) => {
 	res.render('log-in.ejs', sharedRenderData);
 });
 
+// ── /login → redirect to /log (profile.ejs uses /login) ──
+app.get('/login', (req, res) => {
+	res.redirect('/log');
+});
+
 // ── Register ──────────────────────────────────────────────
 app.get('/reg', (req, res) => {
 	res.render('register.ejs', sharedRenderData);
