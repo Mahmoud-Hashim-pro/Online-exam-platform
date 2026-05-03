@@ -369,221 +369,48 @@
  
 <div class="toast" id="toast"></div>
  
-<script>
-  // ─────────────────────────────────────────
-  //  CONFIG — غير الـ BASE_URL لو الـ port مختلف
-  // ─────────────────────────────────────────
-  const BASE_URL = 'http://localhost:3000';
- 
-  // ─────────────────────────────────────────
-  //  HELPERS
-  // ─────────────────────────────────────────
-  function getToken() {
-    return localStorage.getItem('token');
-  }
- 
-  function authHeaders() {
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + getToken()
-    };
-  }
- 
-  function formatDate(iso) {
-    if (!iso) return '';
-    return 'Joined ' + new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  }
- 
+<script type="module">
+  import { initializeApp }              from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  const _app  = initializeApp({
+    apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
+    authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
+    projectId:         "online-quiz-and-exam-platform",
+    storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
+    messagingSenderId: "1090034589767",
+    appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
+  });
+  const _auth = getAuth(_app);
+
+  // بيراقب الـ auth state
+  onAuthStateChanged(_auth, user => {
+    if (!user) {
+      window.location.href = '/log';
+      return;
+    }
+    // ملي البيانات من Firebase مباشرة
+    document.getElementById('avatar-initials').textContent = initials(user.displayName || user.email);
+    document.getElementById('display-name').textContent    = user.displayName || '—';
+    document.getElementById('display-handle').textContent  = user.email;
+    document.getElementById('display-joined').textContent  = 'Joined ' + new Date(user.metadata.creationTime).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+    document.getElementById('edit-name').value  = user.displayName || '';
+    document.getElementById('edit-email').value = user.email || '';
+    document.getElementById('skeleton').classList.add('hidden');
+    document.getElementById('profile-content').classList.remove('hidden');
+  });
+
+  // Sign out بيستخدم Firebase
+  window.signOut = async function() {
+    if (!confirm('Are you sure you want to sign out?')) return;
+    await fbSignOut(_auth);
+    window.location.href = '/log';
+  };
+
   function initials(name) {
     if (!name) return '?';
-    return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
   }
- 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  }
- 
-  function showError(msg) {
-    const b = document.getElementById('error-banner');
-    b.textContent = msg;
-    b.style.display = 'block';
-  }
- 
-  const ICONS = ['🌍','🔬','📚','📐','🧠','🎯','💡','🏆'];
-  function randomIcon() {
-    return ICONS[Math.floor(Math.random() * ICONS.length)];
-  }
- 
-  // ─────────────────────────────────────────
-  //  RENDER
-  // ─────────────────────────────────────────
-  function renderUser(user) {
-    document.getElementById('avatar-initials').textContent  = initials(user.name);
-    document.getElementById('display-name').textContent     = user.name || '—';
-    document.getElementById('display-handle').textContent   = '@' + (user.username || user.handle || '');
-    document.getElementById('display-joined').textContent   = formatDate(user.createdAt);
-    document.getElementById('edit-name').value    = user.name || '';
-    document.getElementById('edit-handle').value  = user.username || user.handle || '';
-    document.getElementById('edit-email').value   = user.email || '';
-  }
- 
-  function renderStats(stats) {
-    document.getElementById('stat-played').textContent  = stats.played  ?? '0';
-    document.getElementById('stat-created').textContent = stats.created ?? '0';
-    document.getElementById('stat-avg').textContent     =
-      stats.avgScore != null ? Math.round(stats.avgScore) + '%' : '—';
-  }
- 
-  function renderQuizzes(quizzes) {
-    const list = document.getElementById('quiz-list');
-    if (!quizzes || quizzes.length === 0) {
-      list.innerHTML = '<div class="empty">No quizzes yet</div>';
-      return;
-    }
-    list.innerHTML = quizzes.map(q => `
-      <div class="quiz-item" onclick="location.href='/quiz/${q._id || q.id}'">
-        <div class="quiz-icon">${randomIcon()}</div>
-        <div class="quiz-info">
-          <div class="quiz-title">${q.title}</div>
-          <div class="quiz-meta">
-            ${q.questionCount ?? q.questions?.length ?? 0} questions · ${q.plays ?? 0} plays
-          </div>
-        </div>
-        <span class="quiz-badge ${q.isPublic || q.visibility === 'public' ? 'badge-public' : 'badge-private'}">
-          ${q.isPublic || q.visibility === 'public' ? 'Public' : 'Private'}
-        </span>
-      </div>
-    `).join('');
-  }
- 
-  function renderHistory(history) {
-    const list = document.getElementById('history-list');
-    if (!history || history.length === 0) {
-      list.innerHTML = '<div class="empty">No activity yet</div>';
-      return;
-    }
-    list.innerHTML = history.map(h => `
-      <div class="history-item">
-        <div class="history-icon">${randomIcon()}</div>
-        <div class="history-info">
-          <div class="history-title">${h.quizTitle || h.title}</div>
-          <div class="history-meta">
-            ${new Date(h.playedAt || h.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}
-            · ${h.totalQuestions ?? '?'} questions
-          </div>
-        </div>
-        <div class="history-score">${h.score}/${h.totalQuestions ?? '?'}</div>
-      </div>
-    `).join('');
-  }
- 
-  // ─────────────────────────────────────────
-  //  LOAD PROFILE — بيجيب من Express
-  // ─────────────────────────────────────────
-  async function loadProfile() {
-    const token = getToken();
- 
-    if (!token) {
-      window.location.href = '/login';
-      return;
-    }
- 
-    try {
-      const [userRes, statsRes, quizzesRes, historyRes] = await Promise.all([
-        fetch(`${BASE_URL}/api/me`,           { headers: authHeaders() }),
-        fetch(`${BASE_URL}/api/me/stats`,     { headers: authHeaders() }),
-        fetch(`${BASE_URL}/api/me/quizzes`,   { headers: authHeaders() }),
-        fetch(`${BASE_URL}/api/me/history`,   { headers: authHeaders() }),
-      ]);
- 
-      // token منتهي
-      if (userRes.status === 401) {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-        return;
-      }
- 
-      const user    = await userRes.json();
-      const stats   = statsRes.ok   ? await statsRes.json()   : {};
-      const quizzes = quizzesRes.ok ? await quizzesRes.json() : [];
-      const history = historyRes.ok ? await historyRes.json() : [];
- 
-      renderUser(user);
-      renderStats(stats);
-      renderQuizzes(quizzes);
-      renderHistory(history);
- 
-      document.getElementById('skeleton').classList.add('hidden');
-      document.getElementById('profile-content').classList.remove('hidden');
- 
-    } catch (err) {
-      document.getElementById('skeleton').classList.add('hidden');
-      document.getElementById('profile-content').classList.remove('hidden');
-      showError('Failed to load profile. Check your connection.');
-      console.error(err);
-    }
-  }
- 
-  // ─────────────────────────────────────────
-  //  EDIT PROFILE
-  // ─────────────────────────────────────────
-  function openEdit()  { document.getElementById('modal').classList.add('open'); }
-  function closeEdit() { document.getElementById('modal').classList.remove('open'); }
- 
-  function handleOverlayClick(e) {
-    if (e.target === document.getElementById('modal')) closeEdit();
-  }
- 
-  async function saveEdit() {
-    const name   = document.getElementById('edit-name').value.trim();
-    const handle = document.getElementById('edit-handle').value.trim();
-    const email  = document.getElementById('edit-email').value.trim();
- 
-    if (!name || !handle) { showToast('Name and username are required'); return; }
- 
-    try {
-      const res = await fetch(`${BASE_URL}/api/me`, {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify({ name, username: handle, email })
-      });
- 
-      if (!res.ok) { showToast('Failed to update profile'); return; }
- 
-      document.getElementById('display-name').textContent    = name;
-      document.getElementById('display-handle').textContent  = '@' + handle;
-      document.getElementById('avatar-initials').textContent = initials(name);
- 
-      closeEdit();
-      showToast('Profile updated!');
-    } catch (err) {
-      showToast('Connection error');
-      console.error(err);
-    }
-  }
- 
-  // ─────────────────────────────────────────
-  //  SIGN OUT
-  // ─────────────────────────────────────────
-  async function signOut() {
-    if (!confirm('Are you sure you want to sign out?')) return;
-    try {
-      await fetch(`${BASE_URL}/api/auth/signout`, {
-        method: 'POST',
-        headers: authHeaders()
-      });
-    } catch (_) {}
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-  }
- 
-  // ─────────────────────────────────────────
-  //  INIT
-  // ─────────────────────────────────────────
-  loadProfile();
 </script>
 </body>
 </html>
