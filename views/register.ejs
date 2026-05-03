@@ -216,7 +216,7 @@
   import { getAuth, createUserWithEmailAndPassword, updateProfile,
            GoogleAuthProvider, signInWithPopup }                   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-  // ── Firebase Config — حط البيانات بتاعتك هنا ────────────
+  //  Firebase Config 
   const firebaseConfig = {
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
     authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
@@ -230,7 +230,7 @@
   const auth     = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  // ── Toggle Password ───────────────────────────────────────
+  // Toggle Password 
   window.togglePass = function(fieldId, iconId) {
     const input = document.getElementById(fieldId);
     input.type = input.type === 'password' ? 'text' : 'password';
@@ -238,14 +238,14 @@
       input.type === 'text' ? '0.4' : '1';
   };
 
-  // ── Show Error ────────────────────────────────────────────
+  //  Show Error 
   function showError(msg) {
     const el = document.getElementById('error-msg');
     el.textContent = msg;
     el.style.display = 'block';
   }
 
-  // ── Save token ────────────────────────────────────────────
+  //  Save token 
   async function saveAndRedirect(user) {
     const token = await user.getIdToken();
     localStorage.setItem('token', token);
@@ -259,7 +259,7 @@
     window.location.href = '/home';
   }
 
-  // ── Register with Email ───────────────────────────────────
+  //  Register with Email 
   window.handleRegister = async function() {
     const username  = document.getElementById('username-field').value.trim();
     const firstname = document.getElementById('firstname-field').value.trim();
@@ -304,7 +304,7 @@
     }
   };
 
-  // ── Register / Login with Google ──────────────────────────
+  //  Register / Login with Google
   window.handleGoogle = async function() {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -316,12 +316,12 @@
     }
   };
 
-  // ── Enter key ─────────────────────────────────────────────
+  //  Enter key 
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') window.handleRegister();
   });
 
-  // ── لو المستخدم مسجل قبل كده روح على home ────────────────
+  //  لو المستخدم مسجل قبل كده روح على home 
   import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
   onAuthStateChanged(auth, (user) => {
     if (user) window.location.href = '/home';
