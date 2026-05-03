@@ -22,8 +22,13 @@ const sharedRenderData = {
 // ROUTES
 // ═══════════════════════════════════════════════════════════
 
-// ── Home (sign-in.ejs) — الصفحة الرئيسية بالكروت الـ 6 ──
+// ── Register — الصفحة الأولى اللي بتظهر ─────────────────
 app.get('/', (req, res) => {
+	res.render('register.ejs', sharedRenderData);
+});
+
+// ── Home (sign-in.ejs) — الصفحة الرئيسية بالكروت الـ 6 ──
+app.get('/home', (req, res) => {
 	res.render('sign-in.ejs', sharedRenderData);
 });
 
