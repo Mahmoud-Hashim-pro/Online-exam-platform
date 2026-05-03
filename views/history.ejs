@@ -1,350 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quizer â€” History</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>Quizer - History</title>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+        <link href="../docs/theme.css" rel="stylesheet"/>
+		<style>
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
 
-    :root {
-      --bg:        #ffffff;
-      --surface:   #f4f4f6;
-      --card:      #f4f4f6;
-      --card-hover:#eaeaef;
-      --border:    rgba(0,0,0,0.08);
-      --border-h:  rgba(0,0,0,0.18);
-      --text:      #111114;
-      --muted:     #666672;
-      --accent:    #5a4ee8;
-      --accent2:   #1aaa88;
-      --win:       #1aaa88;
-      --lose:      #e85a5a;
-    }
+        .page {
+            width: 100%;
+            max-width: 560px;
+        }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:        #1e1e22;
-        --surface:   #28282e;
-        --card:      #313138;
-        --card-hover:#3a3a44;
-        --border:    rgba(255,255,255,0.08);
-        --border-h:  rgba(255,255,255,0.18);
-        --text:      #e8e8ec;
-        --muted:     #8a8a98;
-        --accent:    #7c6ff7;
-        --accent2:   #4fcfae;
-        --win:       #4fcfae;
-        --lose:      #f27474;
-      }
-    }
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      flex-direction: column;
-    }
+        .header-title {
+			font-family: 'Space Mono', monospace;
+            font-size: 1.15rem;
+            font-weight: var(--weight-heavy);
+            color: var(--text);
+        }
 
-    /* â”€â”€ Top Bar â”€â”€ */
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 1.4rem 1.5rem 0;
-      max-width: 560px;
-      margin: 0 auto;
-    }
+		.back-btn {
+			width: 36px;
+			height: 36px;
+			border-radius: var(--card-r);
+			background: var(--card);
+			border: 1px solid var(--border);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			text-decoration: none;
+			transition: background 0.15s, border-color 0.15s, border 0.15s;
+			flex-shrink: 0;
+		}
+		.back-btn:hover { background: var(--card-hover); border-color: var(--border-h); }
+		.back-btn svg {
+			width: 18px; height: 18px;
+			stroke: var(--text); fill: none;
+			stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round;
+		}
 
-    .back-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.15s, border-color 0.15s;
-      flex-shrink: 0;
-    }
-    .back-btn:hover {
-      background: var(--card-hover);
-      border-color: var(--border-h);
-    }
-    .back-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--text);
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
+		/* Stats Row */
+		.stats {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 10px;
+			margin-bottom: 1.5rem;
+		}
 
-    .topbar-title {
-      font-family: 'Space Mono', monospace;
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+		.stat-card {
+			background: var(--card);
+			border: 1px solid var(--border);
+			border-radius: var(--card-r);
+			padding: 1rem 0.8rem;
+			text-align: center;
+		}
+		.stat-number {
+			font-family: 'Space Mono', monospace;
+			font-size: 1.6rem;
+			font-weight: 700;
+			line-height: 1;
+			margin-bottom: 4px;
+		}
+		.stat-number.accent  { color: var(--accent); }
+		.stat-number.win     { color: var(--win); }
+		.stat-number.lose    { color: var(--lose); }
+		.stat-label {
+			font-size: 0.7rem;
+			color: var(--muted);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
 
-    /* â”€â”€ Page â”€â”€ */
-    .page {
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 1.4rem 1.5rem 3rem;
-    }
+		/* ── Section Title ── */
+		.section-title {
+			font-size: 0.72rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			color: var(--muted);
+			margin-bottom: 10px;
+		}
 
-    /* â”€â”€ Stats Row â”€â”€ */
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 1.5rem;
-    }
+		/* ── History List ── */
+		.history-list {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
 
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1rem 0.8rem;
-      text-align: center;
-    }
-    .stat-number {
-      font-family: 'Space Mono', monospace;
-      font-size: 1.6rem;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .stat-number.accent  { color: var(--accent); }
-    .stat-number.win     { color: var(--win); }
-    .stat-number.lose    { color: var(--lose); }
-    .stat-label {
-      font-size: 0.7rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+		.quiz-card {
+			background: var(--card);
+			border: 1px solid var(--border);
+			border-radius: var(--card-r);
+			padding: 1rem 1.1rem;
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			cursor: pointer;
+			transition: background 0.15s, border-color 0.15s, transform 0.15s;
+			text-decoration: none;
+			color: inherit;
+			position: relative;
+			overflow: hidden;
+		}
+		.quiz-card:hover {
+			background: var(--card-hover);
+			border-color: var(--border-h);
+			transform: translateY(-2px);
+		}
+		/* .quiz-card:active { transform: translateY(0); } */
+		.quiz-card::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 20%;
+			height: 60%;
+			width: 3px;
+			border-radius: var(--card-r);
+		}
+		.quiz-card.win::after  { background: var(--win); }
+		.quiz-card.lose::after { background: var(--lose); }
 
-    /* â”€â”€ Section Title â”€â”€ */
-    .section-title {
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
+		.quiz-icon {
+			width: 42px;
+			height: 42px;
+			border-radius: var(--card-r);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+			font-size: 1.2rem;
+		}
+		/*.quiz-icon.science  { background: rgba(90,78,232,0.12); }
+		.quiz-icon.math     { background: rgba(26,170,136,0.12); }
+		.quiz-icon.history  { background: rgba(242,196,111,0.12); }
+		.quiz-icon.sports   { background: rgba(242,116,116,0.12); }
+		.quiz-icon.general  { background: rgba(130,130,160,0.12); }*/
 
-    /* â”€â”€ History List â”€â”€ */
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+		/* Info */
+		.quiz-info { flex: 1; min-width: 0; }
+		.quiz-name {
+			font-size: 0.92rem;
+			font-weight: 500;
+			margin-bottom: 3px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.quiz-meta {
+			font-size: 0.72rem;
+			color: var(--muted);
+		}
 
-    .quiz-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1rem 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, transform 0.15s;
-      text-decoration: none;
-      color: inherit;
-      position: relative;
-      overflow: hidden;
-    }
-    .quiz-card:hover {
-      background: var(--card-hover);
-      border-color: var(--border-h);
-      transform: translateY(-2px);
-    }
-    .quiz-card:active { transform: translateY(0); }
+		/* Score Badge */
+		.quiz-score {
+			text-align: right;
+			flex-shrink: 0;
+		}
+		.score-num {
+			font-family: 'Space Mono', monospace;
+			font-size: 0.95rem;
+			font-weight: 700;
+		}
+		.score-num.win  { color: var(--win); }
+		.score-num.lose { color: var(--lose); }
+		.score-label {
+			font-size: 0.68rem;
+			color: var(--muted);
+		}
 
-    /* Ø§Ù„Ø´Ø±ÙŠØ· Ø§Ù„Ø¬Ø§Ù†Ø¨ÙŠ Ø§Ù„Ù„ÙŠ Ø¨ÙŠØ¯Ù„ Ø¹Ù„Ù‰ Ø§Ù„Ù†ØªÙŠØ¬Ø© */
-    .quiz-card::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 20%;
-      height: 60%;
-      width: 3px;
-      border-radius: 0 2px 2px 0;
-    }
-    .quiz-card.win::after  { background: var(--win); }
-    .quiz-card.lose::after { background: var(--lose); }
+		/* ── Empty State ── */
+		.empty {flex-direction: column;
+			text-align: center;
+			padding: 3rem 1rem;
+			color: var(--muted);
+		}
+		.empty svg {
+			width: 48px;
+			height: 48px;
+			stroke: var(--border-h);
+			fill: none;
+			stroke-width: 1.5;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			margin-bottom: 1rem;
+		}
+		.empty-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
+		.empty-desc  { font-size: 0.8rem; }
 
-    /* Ø£ÙŠÙ‚ÙˆÙ†Ø© Ù†ÙˆØ¹ Ø§Ù„Ù€ quiz */
-    .quiz-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 1.2rem;
-    }
-    .quiz-icon.science  { background: rgba(90,78,232,0.12); }
-    .quiz-icon.math     { background: rgba(26,170,136,0.12); }
-    .quiz-icon.history  { background: rgba(242,196,111,0.12); }
-    .quiz-icon.sports   { background: rgba(242,116,116,0.12); }
-    .quiz-icon.general  { background: rgba(130,130,160,0.12); }
+		/* ── Animations ── */
+		.quiz-card {
+			animation: fadeUp 0.3s ease both;
+		}
+		/*.quiz-card:nth-child(1) { animation-delay: 0.05s; }
+		.quiz-card:nth-child(2) { animation-delay: 0.10s; }
+		.quiz-card:nth-child(3) { animation-delay: 0.15s; }
+		.quiz-card:nth-child(4) { animation-delay: 0.20s; }
+		.quiz-card:nth-child(5) { animation-delay: 0.25s; }*/
 
-    /* Info */
-    .quiz-info { flex: 1; min-width: 0; }
-    .quiz-name {
-      font-size: 0.92rem;
-      font-weight: 500;
-      margin-bottom: 3px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .quiz-meta {
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
+		@keyframes fadeUp {
+			from { opacity: 0; transform: translateY(12px); }
+			to   { opacity: 1; transform: translateY(0); }
+		}
 
-    /* Score Badge */
-    .quiz-score {
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .score-num {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-    .score-num.win  { color: var(--win); }
-    .score-num.lose { color: var(--lose); }
-    .score-label {
-      font-size: 0.68rem;
-      color: var(--muted);
-    }
-
-    /* â”€â”€ Empty State â”€â”€ */
-    .empty {flex-direction: column;
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--muted);
-    }
-    .empty svg {
-      width: 48px;
-      height: 48px;
-      stroke: var(--border-h);
-      fill: none;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      margin-bottom: 1rem;
-    }
-    .empty-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
-    .empty-desc  { font-size: 0.8rem; }
-
-    /* â”€â”€ Animations â”€â”€ */
-    .quiz-card {
-      animation: fadeUp 0.3s ease both;
-    }
-    .quiz-card:nth-child(1) { animation-delay: 0.05s; }
-    .quiz-card:nth-child(2) { animation-delay: 0.10s; }
-    .quiz-card:nth-child(3) { animation-delay: 0.15s; }
-    .quiz-card:nth-child(4) { animation-delay: 0.20s; }
-    .quiz-card:nth-child(5) { animation-delay: 0.25s; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .stat-card {
-      animation: fadeUp 0.3s ease both;
-    }
-    .stat-card:nth-child(1) { animation-delay: 0.0s; }
-    .stat-card:nth-child(2) { animation-delay: 0.05s; }
-    .stat-card:nth-child(3) { animation-delay: 0.10s; }
-  </style>
-</head>
-<body>
-
-  <!-- Top Bar -->
-  <div class="topbar">
-    <a href="/" class="back-btn">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </a>
-    <span class="topbar-title">History</span>
-  </div>
-
-  <div class="page">
-
-    <!-- Stats - Ø§Ù„Ø£Ø±Ù‚Ø§Ù… Ø¯ÙŠ Ù‡ØªÙŠØ¬ÙŠ Ù…Ù† Ø§Ù„Ù€ server -->
-    <div class="stats">
-      <div class="stat-card">
-        <div class="stat-number accent" id="stat-total">0</div>
-        <div class="stat-label">Total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number win" id="stat-wins">0</div>
-        <div class="stat-label">Wins</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number lose" id="stat-losses">0</div>
-        <div class="stat-label">Losses</div>
-      </div>
-    </div>
-
-    <!-- List -->
-    <div class="section-title">Recent Quizzes</div>
-
-    <div class="history-list" id="history-list">
-      <!-- Ø§Ù„ÙƒØ±ÙˆØª Ù‡ØªØªØ¶Ø§Ù Ù‡Ù†Ø§ Ù…Ù† Ø§Ù„Ù€ server -->
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty" id="empty-state">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <div class="empty-title">No quizzes yet</div>
-      <div class="empty-desc">Your quiz history will appear here</div>
-    </div>
-
-    <script>
-      const list = document.getElementById('history-list');
-      const empty = document.getElementById('empty-state');
-      if (list.children.length > 0) {
-        empty.style.display = 'none';
-      }
-    </script>
-
-  </div>
-
-<script type="module">
-  import { initializeApp }        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  const _app  = initializeApp({
-    apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
-    authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
-    projectId:         "online-quiz-and-exam-platform",
-    storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
-    messagingSenderId: "1090034589767",
-    appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
-  });
-  onAuthStateChanged(getAuth(_app), user => {
-    if (!user) window.location.href = '/log';
-  });
-</script>
-</body>
+		/*.stat-card {
+			animation: fadeUp 0.3s ease both;
+		}*/
+		/*.stat-card:nth-child(1) { animation-delay: 0.0s; }
+		.stat-card:nth-child(2) { animation-delay: 0.05s; }
+		.stat-card:nth-child(3) { animation-delay: 0.10s; }*/
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<!-- Top Bar -->
+			<div class="header">
+				<a href="/" class="back-btn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></a>
+				<span class="header-title">History</span>
+			</div>
+			<!-- Statistical Information -->
+			<div class="stats">
+				<div class="stat-card">
+					<div class="stat-number accent" id="stat-total">0</div>
+					<div class="stat-label">Total</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-number win" id="stat-wins">0</div>
+					<div class="stat-label">Wins</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-number lose" id="stat-losses">0</div>
+					<div class="stat-label">Losses</div>
+				</div>
+			</div>
+			<!-- List -->
+			<div class="section-title">Recent Quizzes</div>
+			<div class="history-list" id="history-list"></div>
+			<!-- Empty State -->
+			<div class="empty" id="empty-state">
+				<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+				<div class="empty-title">No quizzes yet</div>
+				<div class="empty-desc">Your quiz history will appear here</div>
+			</div>
+		</div>
+		<script>
+			const list = document.getElementById('history-list');
+			const empty = document.getElementById('empty-state');
+			if (list.children.length > 0) {
+				empty.style.display = 'none';
+			}
+		</script>
+	</body>
 </html>

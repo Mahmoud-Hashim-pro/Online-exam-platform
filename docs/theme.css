@@ -1,0 +1,45 @@
+
+/**
+ * Below You can find color palettes, and constants
+ * that were used in this project
+ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+	/* Border radius in pixels */
+	--card-r:     8px;
+
+	/* Font weight for attention */
+	--weight-heavy: 600;
+
+	/* Light Theme */
+	--bg:        #ffffff;
+	--card:      #f4f4f6;
+	--card-hover:#eaeaef;
+	--border:    rgba(0,0,0,0.08);
+	--border-h:  rgba(0,0,0,0.18);
+	--text:      #111114;
+	--muted:     #666672;
+	--accent:    #5a4ee8;
+	--accent2:   #1aaa88;
+	--danger:    #e05252;
+	--win:        #1aaa88;
+	--lose:       #e85a5a;
+}
+
+:root {
+	/* Dark mode */
+	--bg:        #1e1e22;
+	--card:      #313138;
+	--card-hover:#3a3a44;
+	--border:    rgba(255,255,255,0.08);
+	--border-h:  rgba(255,255,255,0.18);
+	--text:      #e8e8ec;
+	--muted:     #8a8a98;
+	--accent:    #7c6ff7;
+	--accent2:   #4fcfae;
+	--danger:    #f27474;
+	--win:        #4fcfae;
+	--lose:       #f27474;
+}

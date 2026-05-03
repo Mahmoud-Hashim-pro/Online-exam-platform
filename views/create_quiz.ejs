@@ -1,492 +1,431 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quizer — Create</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>Quizer - Create</title>
+		<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+		<link href="../docs/theme.css" rel="stylesheet"/>
+		<style>
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
 
-    :root {
-      --bg:        #ffffff;
-      --card:      #f4f4f6;
-      --card-hover:#eaeaef;
-      --border:    rgba(0,0,0,0.08);
-      --border-h:  rgba(0,0,0,0.18);
-      --text:      #111114;
-      --muted:     #666672;
-      --accent:    #5a4ee8;
-      --accent2:   #1aaa88;
-      --danger:    #e05252;
-    }
+        .page {
+            width: 100%;
+            max-width: 560px;
+        }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:        #1e1e22;
-        --card:      #313138;
-        --card-hover:#3a3a44;
-        --border:    rgba(255,255,255,0.08);
-        --border-h:  rgba(255,255,255,0.18);
-        --text:      #e8e8ec;
-        --muted:     #8a8a98;
-        --accent:    #7c6ff7;
-        --accent2:   #4fcfae;
-        --danger:    #f27474;
-      }
-    }
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
+        .header-title {
+			font-family: 'Space Mono', monospace;
+            font-size: 1.15rem;
+            font-weight: var(--weight-heavy);
+            color: var(--text);
+        }
 
-    .page {
-      width: 100%;
-      max-width: 560px;
-    }
+		.back-btn {
+			width: 36px;
+			height: 36px;
+			border-radius: var(--card-r);
+			background: var(--card);
+			border: 1px solid var(--border);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			text-decoration: none;
+			transition: background 0.15s, border-color 0.15s, border 0.15s;
+			flex-shrink: 0;
+		}
+		.back-btn:hover { background: var(--card-hover); border-color: var(--border-h); }
+		.back-btn svg {
+		  width: 18px; height: 18px;
+		  stroke: var(--text); fill: none;
+		  stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round;
+		}
 
-    /* ── Header ── */
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 2rem;
-    }
+		.page-title {
+			font-size: 1.4rem;
+			font-weight: var(--weight-heavy);
+			color: var(--text);
+		}
 
-    .back-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 18px;
-      text-decoration: none;
-      transition: background 0.15s;
-      flex-shrink: 0;
-    }
-    .back-btn:hover { background: var(--card-hover); }
+		/* Section labels */
+		.section-label {
+			font-size: 0.7rem;
+			font-weight: var(--weight-heavy);
+			letter-spacing: 0.07em;
+			text-transform: uppercase;
+			color: var(--muted);
+			margin-bottom: 0.5rem;
+		}
 
-    .page-title {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: var(--text);
-    }
+		/* Form fields */
+		.field { margin-bottom: 1rem; }
 
-    /* ── Section labels ── */
-    .section-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.5rem;
-    }
+		label {
+			display: block;
+			font-size: 0.85rem;
+			font-weight: var(--weight-heavy);
+			margin-bottom: 6px;
+			color: var(--text);
+		}
 
-    /* ── Form fields ── */
-    .field { margin-bottom: 1rem; }
+		input[type="text"],
+		textarea,
+		select {
+			width: 100%;
+			padding: 10px 13px;
+			background: var(--card);
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			color: var(--text);
+			font-family: 'DM Sans', sans-serif;
+			font-size: 0.9rem;
+			outline: none;
+			transition: border-color 0.15s, box-shadow 0.15s;
+			resize: none;
+		}
+		input[type="text"]:focus,
+			textarea:focus,
+			select:focus {
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(90, 78, 232, 0.12);
+		}
 
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
+		select {
+			appearance: none;
+			padding-right: 36px;
+			cursor: pointer;
+		}
 
-    input[type="text"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px 13px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      resize: none;
-    }
-    input[type="text"]:focus,
-    textarea:focus,
-    select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(90, 78, 232, 0.12);
-    }
+		/* Question card */
+		.q-card {
+			background: var(--card);
+			border: 1px solid var(--border);
+			border-radius: 14px;
+			padding: 1.1rem 1.1rem 1rem;
+			margin-bottom: 12px;
+			position: relative;
+		}
 
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 13px center;
-      padding-right: 36px;
-      cursor: pointer;
-    }
+		.q-card-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 0.85rem;
+		}
 
-    /* ── Question card ── */
-    .q-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.1rem 1.1rem 1rem;
-      margin-bottom: 12px;
-      position: relative;
-    }
+		.q-badge {
+			font-size: 0.7rem;
+			font-weight: 600;
+		}
 
-    .q-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.85rem;
-    }
+		.remove-btn {
+			width: 24px;
+			height: 24px;
+			border-radius: var(--card-r);
+			background: var(--card);
+			border: 1px solid var(--border);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: background 0.15s, border-color 0.15s, border 0.15s;
+		}
+		.remove-btn:hover { background: var(--card-hover); border-color: var(--danger); }
+		.remove-btn svg {
+		  width: 18px; height: 18px;
+		  fill: var(--text);
+		}
 
-    .q-badge {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+		.q-card input[type="text"] { margin-bottom: 0.7rem; }
 
-    .remove-btn {
-      width: 26px;
-      height: 26px;
-      border-radius: 7px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s, color 0.15s;
-    }
-    .remove-btn:hover { background: rgba(224,82,82,0.1); color: var(--danger); border-color: var(--danger); }
+		.options-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 8px;
+			margin-bottom: 0.75rem;
+		}
 
-    .q-card input[type="text"] { margin-bottom: 0.7rem; }
+		.option-input-wrap {
+			position: relative;
+		}
+		.option-letter {
+			position: absolute;
+			left: 11px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 0.75rem;
+			font-weight: 600;
+			color: var(--muted);
+			pointer-events: none;
+		}
+		.option-input-wrap input {
+			padding-left: 28px;
+		}
 
-    .options-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 0.75rem;
-    }
+		.correct-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.correct-row label {
+			font-size: 0.8rem;
+			color: var(--muted);
+			margin-bottom: 0;
+			white-space: nowrap;
+		}
 
-    .option-input-wrap {
-      position: relative;
-    }
-    .option-letter {
-      position: absolute;
-      left: 11px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--muted);
-      pointer-events: none;
-    }
-    .option-input-wrap input {
-      padding-left: 28px;
-    }
+		/* Add question button */
+		.add-q-btn {
+			width: 100%;
+			padding: 11px;
+			border-radius: 12px;
+			border: 1.5px dashed var(--border-h);
+			background: transparent;
+			color: var(--muted);
+			font-family: 'DM Sans', sans-serif;
+			font-size: 0.9rem;
+			cursor: pointer;
+			margin-bottom: 1.5rem;
+			transition: background 0.15s, color 0.15s;
+		}
+		.add-q-btn:hover { background: var(--card); color: var(--text); }
 
-    .correct-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .correct-row label {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 0;
-      white-space: nowrap;
-    }
+		/* Publish button */
+		.publish-btn {
+			width: 100%;
+			padding: 13px;
+			border-radius: 12px;
+			border: none;
+			background: linear-gradient(135deg, var(--accent), var(--accent2));
+			color: #fff;
+			font-family: 'DM Sans', sans-serif;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: opacity 0.15s, transform 0.1s;
+			margin-bottom: 2rem;
+		}
+		.publish-btn:hover { opacity: 0.9; }
+		.publish-btn:active { transform: scale(0.99); }
 
-    /* ── Add question button ── */
-    .add-q-btn {
-      width: 100%;
-      padding: 11px;
-      border-radius: 12px;
-      border: 1.5px dashed var(--border-h);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-bottom: 1.5rem;
-      transition: background 0.15s, color 0.15s;
-    }
-    .add-q-btn:hover { background: var(--card); color: var(--text); }
+		/* Toast */
+		.toast {
+			position: fixed;
+			bottom: 2rem;
+			left: 50%;
+			transform: translateX(-50%) translateY(20px);
+			background: var(--text);
+			color: var(--bg);
+			padding: 10px 20px;
+			border-radius: 99px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			opacity: 0;
+			transition: opacity 0.25s, transform 0.25s;
+			pointer-events: none;
+			white-space: nowrap;
+		}
+		.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── Publish button ── */
-    .publish-btn {
-      width: 100%;
-      padding: 13px;
-      border-radius: 12px;
-      border: none;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-      margin-bottom: 2rem;
-    }
-    .publish-btn:hover { opacity: 0.9; }
-    .publish-btn:active { transform: scale(0.99); }
+		/* Counter */
+		.q-counter {
+			font-size: 0.75rem;
+			color: var(--muted);
+		}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<!-- Top Bar -->
+			<div class="header">
+				<a href="/" class="back-btn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></a>
+				<span class="header-title">Create</span>
+			</div>
+			<!-- Basic info -->
+			<div class="field">
+				<label for="quiz-title">Quiz title <span style="color:var(--danger)">*</span></label>
+				<input type="text" id="quiz-title" placeholder="e.g. World Geography 101" maxlength="80">
+			</div>
+			<div class="field">
+				<label for="quiz-desc">Description</label>
+				<textarea id="quiz-desc" rows="2" placeholder="A short description of your quiz…" maxlength="200"></textarea>
+			</div>
+			<!-- Questions -->
+			<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
+				<span class="section-label">Questions</span>
+				<span class="q-counter" id="q-counter">0 questions</span>
+			</div>
+			<div id="q-list"></div>
+				<button class="add-q-btn" onclick="addQuestion()">+ Add question</button>
+				<button class="publish-btn" onclick="publish()">Publish quiz</button>
+			</div>
+			<!-- Information Box -->
+			<div class="toast" id="toast"></div>
+		</div>
+	<script>
+			var qCount = 0;
 
-    /* ── Toast ── */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--text);
-      color: var(--bg);
-      padding: 10px 20px;
-      border-radius: 99px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+			function addQuestion() {
+				qCount++;
+				updateCounter();
 
-    /* ── Counter ── */
-    .q-counter {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-  </style>
-</head>
-<body>
+				const list = document.getElementById('q-list');
+				const idx = qCount;
 
-<div class="page">
+				const card = document.createElement('div');
+				card.className = 'q-card';
+				card.id = 'q-' + idx;
+				card.innerHTML = `
+					<div class="q-card-header">
+						<span class="q-badge">QUESTION ${idx}</span>
+						<button class="remove-btn" onclick="removeQuestion(${idx})" title="Remove"><svg viewBox="0 -960 960 960"><path d="m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"/></svg></button>
+					</div>
+					<input type="text" placeholder="Write your question here…" class="q-text">
+					<div class="options-grid">
+						<div class="option-input-wrap">
+							<span class="option-letter">A</span>
+							<input type="text" placeholder="Option A" class="opt-a" oninput="syncOptions(${idx})">
+						</div>
+						<div class="option-input-wrap">
+							<span class="option-letter">B</span>
+							<input type="text" placeholder="Option B" class="opt-b" oninput="syncOptions(${idx})">
+						</div>
+						<div class="option-input-wrap">
+							<span class="option-letter">C</span>
+							<input type="text" placeholder="Option C" class="opt-c" oninput="syncOptions(${idx})">
+						</div>
+						<div class="option-input-wrap">
+							<span class="option-letter">D</span>
+							<input type="text" placeholder="Option D (optional)" class="opt-d" oninput="syncOptions(${idx})">
+						</div>
+					</div>
+					<div class="correct-row">
+						<label>Correct answer:</label>
+						<select class="correct-sel">
+							<option value="">- select -</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+						</select>
+					</div>
+					`;
 
-  <div class="header">
-    <a href="/" class="back-btn">&#8592;</a>
-    <h1 class="page-title">Create quiz</h1>
-  </div>
+				list.appendChild(card);
+			}
 
-  <!-- Basic info -->
-  <div class="field">
-    <label for="quiz-title">Quiz title <span style="color:var(--danger)">*</span></label>
-    <input type="text" id="quiz-title" placeholder="e.g. World Geography 101" maxlength="80">
-  </div>
+			function removeQuestion(idx) {
+				const card = document.getElementById('q-' + idx).remove();
+				renumberQuestions();
+				updateCounter();
+			}
 
-  <div class="field">
-    <label for="quiz-desc">Description</label>
-    <textarea id="quiz-desc" rows="2" placeholder="A short description of your quiz…" maxlength="200"></textarea>
-  </div>
+			function renumberQuestions() {
+				const cards = document.querySelectorAll('.q-card');
+				qCount = cards.length;
+				cards.forEach((card, i) => {
+					const badge = card.querySelector('.q-badge');
+					if (badge) badge.textContent = 'QUESTION ' + (i + 1);
+				});
+			}
 
-  <!-- Questions -->
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
-    <span class="section-label">Questions</span>
-    <span class="q-counter" id="q-counter">0 questions</span>
-  </div>
+			function syncOptions(idx) {
+				const card = document.getElementById('q-' + idx);
+				if (!card) return;
+				const sel = card.querySelector('.correct-sel');
+				const labels = ['A','B','C','D'];
+				const classes = ['opt-a','opt-b','opt-c','opt-d'];
+				const current = sel.value;
 
-  <div id="q-list"></div>
+				while (sel.options.length > 1) sel.remove(1);
 
-  <button class="add-q-btn" onclick="addQuestion()">+ Add question</button>
+				classes.forEach((cls, i) => {
+					const val = card.querySelector('.' + cls).value.trim();
+					if (val) {
+						const opt = document.createElement('option');
+						opt.value = labels[i];
+						opt.textContent = labels[i] + ' - ' + val;
+						if (current === labels[i]) opt.selected = true;
+						sel.appendChild(opt);
+					}
+				});
+			}
 
-  <button class="publish-btn" onclick="publish()">Publish quiz</button>
+			function updateCounter() {
+				const cards = document.querySelectorAll('.q-card');
+				document.getElementById('q-counter').textContent = qCount + ' question' + (qCount !== 1 ? 's' : '');
+			}
 
-</div>
+			function publish() {
+				const title = document.getElementById('quiz-title').value.trim();
+				if (!title) { showToast('Please add a quiz title'); return; }
 
-<div class="toast" id="toast"></div>
+				const cards = document.querySelectorAll('.q-card');
+				if (cards.length === 0) { showToast('Add at least one question'); return; }
 
-<script>
-  let qCount = 0;
+				let valid = true;
+				cards.forEach((card, i) => {
+					const q = card.querySelector('.q-text').value.trim();
+					const a = card.querySelector('.opt-a').value.trim();
+					const b = card.querySelector('.opt-b').value.trim();
+					const ans = card.querySelector('.correct-sel').value;
+					if (!q || !a || !b || !ans) valid = false;
+				});
 
-  function addQuestion() {
-    qCount++;
-    updateCounter();
+				if (!valid) { showToast('Fill in all required fields'); return; }
 
-    const list = document.getElementById('q-list');
-    const idx = qCount;
+				// Collect data
+				const questions = [];
+				cards.forEach(card => {
+					questions.push({
+						text: card.querySelector('.q-text').value.trim(),
+						options: {
+							A: card.querySelector('.opt-a').value.trim(),
+							B: card.querySelector('.opt-b').value.trim(),
+							C: card.querySelector('.opt-c').value.trim(),
+							D: card.querySelector('.opt-d').value.trim(),
+						},
+						correct: card.querySelector('.correct-sel').value
+					});
+				});
 
-    const card = document.createElement('div');
-    card.className = 'q-card';
-    card.id = 'q-' + idx;
-    card.innerHTML = `
-      <div class="q-card-header">
-        <span class="q-badge">QUESTION ${idx}</span>
-        <button class="remove-btn" onclick="removeQuestion(${idx})" title="Remove">&#215;</button>
-      </div>
+				const quiz = {
+					title,
+					description: document.getElementById('quiz-desc').value.trim(),
+					questions
+				};
 
-      <input type="text" placeholder="Write your question here…" class="q-text">
+				console.log('Quiz to publish:', quiz);
+				// TODO: POST to /api/quizzes
+				showToast('Quiz published successfully!');
+			}
 
-      <div class="options-grid">
-        <div class="option-input-wrap">
-          <span class="option-letter">A</span>
-          <input type="text" placeholder="Option A" class="opt-a" oninput="syncOptions(${idx})">
-        </div>
-        <div class="option-input-wrap">
-          <span class="option-letter">B</span>
-          <input type="text" placeholder="Option B" class="opt-b" oninput="syncOptions(${idx})">
-        </div>
-        <div class="option-input-wrap">
-          <span class="option-letter">C</span>
-          <input type="text" placeholder="Option C" class="opt-c" oninput="syncOptions(${idx})">
-        </div>
-        <div class="option-input-wrap">
-          <span class="option-letter">D</span>
-          <input type="text" placeholder="Option D (optional)" class="opt-d" oninput="syncOptions(${idx})">
-        </div>
-      </div>
+			function showToast(msg) {
+				const t = document.getElementById('toast');
+				t.textContent = msg;
+				t.classList.add('show');
+				setTimeout(() => t.classList.remove('show'), 2800);
+			}
 
-      <div class="correct-row">
-        <label>Correct answer:</label>
-        <select class="correct-sel">
-          <option value="">— select —</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
-      </div>
-    `;
-
-    list.appendChild(card);
-  }
-
-  function removeQuestion(idx) {
-    const card = document.getElementById('q-' + idx);
-    if (card) {
-      card.style.opacity = '0';
-      card.style.transform = 'scale(0.97)';
-      card.style.transition = 'opacity 0.2s, transform 0.2s';
-      setTimeout(() => {
-        card.remove();
-        renumberQuestions();
-        updateCounter();
-      }, 200);
-    }
-  }
-
-  function renumberQuestions() {
-    const cards = document.querySelectorAll('.q-card');
-    qCount = cards.length;
-    cards.forEach((card, i) => {
-      const badge = card.querySelector('.q-badge');
-      if (badge) badge.textContent = 'QUESTION ' + (i + 1);
-    });
-  }
-
-  function syncOptions(idx) {
-    const card = document.getElementById('q-' + idx);
-    if (!card) return;
-    const sel = card.querySelector('.correct-sel');
-    const labels = ['A','B','C','D'];
-    const classes = ['opt-a','opt-b','opt-c','opt-d'];
-    const current = sel.value;
-
-    while (sel.options.length > 1) sel.remove(1);
-
-    classes.forEach((cls, i) => {
-      const val = card.querySelector('.' + cls).value.trim();
-      if (val) {
-        const opt = document.createElement('option');
-        opt.value = labels[i];
-        opt.textContent = labels[i] + ' — ' + val;
-        if (current === labels[i]) opt.selected = true;
-        sel.appendChild(opt);
-      }
-    });
-  }
-
-  function updateCounter() {
-    const cards = document.querySelectorAll('.q-card');
-    const n = cards.length;
-    document.getElementById('q-counter').textContent = n + ' question' + (n !== 1 ? 's' : '');
-  }
-
-  function publish() {
-    const title = document.getElementById('quiz-title').value.trim();
-    if (!title) { showToast('Please add a quiz title'); return; }
-
-    const cards = document.querySelectorAll('.q-card');
-    if (cards.length === 0) { showToast('Add at least one question'); return; }
-
-    let valid = true;
-    cards.forEach((card, i) => {
-      const q = card.querySelector('.q-text').value.trim();
-      const a = card.querySelector('.opt-a').value.trim();
-      const b = card.querySelector('.opt-b').value.trim();
-      const ans = card.querySelector('.correct-sel').value;
-      if (!q || !a || !b || !ans) valid = false;
-    });
-
-    if (!valid) { showToast('Fill in all required fields'); return; }
-
-    // Collect data
-    const questions = [];
-    cards.forEach(card => {
-      questions.push({
-        text: card.querySelector('.q-text').value.trim(),
-        options: {
-          A: card.querySelector('.opt-a').value.trim(),
-          B: card.querySelector('.opt-b').value.trim(),
-          C: card.querySelector('.opt-c').value.trim(),
-          D: card.querySelector('.opt-d').value.trim(),
-        },
-        correct: card.querySelector('.correct-sel').value
-      });
-    });
-
-    const quiz = {
-      title,
-      description: document.getElementById('quiz-desc').value.trim(),
-      questions
-    };
-
-    console.log('Quiz to publish:', quiz);
-    // TODO: POST to /api/quizzes
-    showToast('Quiz published successfully!');
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  }
-
-  // Start with one question by default
-  addQuestion();
-</script>
-<script type="module">
-  import { initializeApp }        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  const _app  = initializeApp({
-    apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
-    authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
-    projectId:         "online-quiz-and-exam-platform",
-    storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
-    messagingSenderId: "1090034589767",
-    appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
-  });
-  onAuthStateChanged(getAuth(_app), user => {
-    if (!user) window.location.href = '/log';
-  });
-</script>
-</body>
+			// Start with one question by default
+			addQuestion();
+		</script>
+	</body>
 </html>
