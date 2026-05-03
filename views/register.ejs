@@ -8,12 +8,28 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            .form-wrapper {
-                padding: 36px;
-                background-color: rgba(49, 49, 49, 1);
-                box-shadow: 2px 2px 4px black;
-                border-radius: 8px;
-            }
+    :root {
+      --bg:      #ffffff;
+      --card:    #f4f4f6;
+      --border:  rgba(0,0,0,0.08);
+      --text:    #111114;
+      --muted:   #666672;
+      --accent:  #5a4ee8;
+      --accent2: #1aaa88;
+      --danger:  #e05252;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #1e1e22;
+        --card:    #313138;
+        --border:  rgba(255,255,255,0.08);
+        --text:    #e8e8ec;
+        --muted:   #8a8a98;
+        --accent:  #7c6ff7;
+        --accent2: #4fcfae;
+        --danger:  #f27474;
+      }
+    }
 
     body {
       background: var(--bg); color: var(--text);
