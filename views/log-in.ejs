@@ -222,7 +222,8 @@
   // ── Save & Redirect ───────────────────────────────────────
   async function saveAndRedirect(user) {
     const token = await user.getIdToken();
-    localStorage.setItem('token', token);
+    // حفظ في cookie عشان السيرفر يقدر يقراه
+    document.cookie = `token=${token}; path=/; max-age=86400; SameSite=Strict`;
     localStorage.setItem('user', JSON.stringify({
       name:  user.displayName,
       email: user.email,
@@ -290,7 +291,10 @@
   });
 
   // ── لو المستخدم مسجل قبل كده روح على home ────────────────
-  if (localStorage.getItem('token')) {
+  function getCookie(name) {
+    return document.cookie.split('; ').find(r => r.startsWith(name + '='))?.split('=')[1];
+  }
+  if (getCookie('token')) {
     window.location.href = '/home';
   }
 </script>
