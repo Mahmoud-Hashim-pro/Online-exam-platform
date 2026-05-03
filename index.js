@@ -19,6 +19,21 @@ const sharedRenderData = {
 };
 
 // ═══════════════════════════════════════════════════════════
+// AUTH MIDDLEWARE — بيحمي الصفحات من غير login
+// ═══════════════════════════════════════════════════════════
+function requireAuth(req, res, next) {
+	// بيتحقق من الـ token في الـ Authorization header
+	const token = req.headers['authorization']?.split(' ')[1]
+		|| req.cookies?.token;
+
+	if (!token) {
+		// لو مفيش token يروح على صفحة الـ login
+		return res.redirect('/log');
+	}
+	next();
+}
+
+// ═══════════════════════════════════════════════════════════
 // ROUTES
 // ═══════════════════════════════════════════════════════════
 
@@ -28,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 // ── Home (sign-in.ejs) — الصفحة الرئيسية بالكروت الـ 6 ──
-app.get('/home', (req, res) => {
+app.get('/home', requireAuth, (req, res) => {
 	res.render('sign-in.ejs', sharedRenderData);
 });
 
@@ -60,22 +75,22 @@ app.get('/about', (req, res) => {
 });
 
 // ── History ───────────────────────────────────────────────
-app.get('/history', (req, res) => {
+app.get('/history', requireAuth, (req, res) => {
 	res.render('history.ejs', sharedRenderData);
 });
 
 // ── Search ────────────────────────────────────────────────
-app.get('/search', (req, res) => {
+app.get('/search', requireAuth, (req, res) => {
 	res.render('search.ejs', sharedRenderData);
 });
 
 // ── Profile ───────────────────────────────────────────────
-app.get('/profile', (req, res) => {
+app.get('/profile', requireAuth, (req, res) => {
 	res.render('profile.ejs', sharedRenderData);
 });
 
 // ── Create Quiz ───────────────────────────────────────────
-app.get('/create', (req, res) => {
+app.get('/create', requireAuth, (req, res) => {
 	res.render('create_quiz.ejs', sharedRenderData);
 });
 
