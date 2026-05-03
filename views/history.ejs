@@ -205,7 +205,7 @@
     .quiz-icon.sports   { background: rgba(242,116,116,0.12); }
     .quiz-icon.general  { background: rgba(130,130,160,0.12); }
 
-    /* Info */
+
     .quiz-info { flex: 1; min-width: 0; }
     .quiz-name {
       font-size: 0.92rem;
@@ -220,7 +220,6 @@
       color: var(--muted);
     }
 
-    /* Score Badge */
     .quiz-score {
       text-align: right;
       flex-shrink: 0;
@@ -237,7 +236,7 @@
       color: var(--muted);
     }
 
-    /* â”€â”€ Empty State â”€â”€ */
+    /* â”€â”€ Empty State â”€â”€ *
     .empty {flex-direction: column;
       text-align: center;
       padding: 3rem 1rem;
@@ -281,7 +280,6 @@
 </head>
 <body>
 
-  <!-- Top Bar -->
   <div class="topbar">
     <a href="/" class="back-btn">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -307,14 +305,12 @@
       </div>
     </div>
 
-    <!-- List -->
     <div class="section-title">Recent Quizzes</div>
 
     <div class="history-list" id="history-list">
       <!-- Ø§Ù„ÙƒØ±ÙˆØª Ù‡ØªØªØ¶Ø§Ù Ù‡Ù†Ø§ Ù…Ù† Ø§Ù„Ù€ server -->
     </div>
 
-    <!-- Empty State -->
     <div class="empty" id="empty-state">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <div class="empty-title">No quizzes yet</div>
