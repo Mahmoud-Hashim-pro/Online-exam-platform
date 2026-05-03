@@ -370,10 +370,11 @@
 <div class="toast" id="toast"></div>
  
 <script type="module">
-  import { initializeApp }              from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { initializeApp }                              from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut as fbSignOut,
+           updateProfile, updateEmail }                 from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-  const _app  = initializeApp({
+  const _app = initializeApp({
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
     authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
     projectId:         "online-quiz-and-exam-platform",
@@ -383,34 +384,105 @@
   });
   const _auth = getAuth(_app);
 
-  // بيراقب الـ auth state
+  // ── Helpers ───────────────────────────────────────────────
+  function initials(name) {
+    if (!name) return '?';
+    return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function showError(msg) {
+    const b = document.getElementById('error-banner');
+    b.textContent = msg;
+    b.style.display = 'block';
+  }
+
+  // ── Auth State ────────────────────────────────────────────
   onAuthStateChanged(_auth, user => {
-    if (!user) {
-      window.location.href = '/log';
-      return;
-    }
-    // ملي البيانات من Firebase مباشرة
+    if (!user) { window.location.href = '/log'; return; }
+
+    // ملي البيانات من Firebase
     document.getElementById('avatar-initials').textContent = initials(user.displayName || user.email);
-    document.getElementById('display-name').textContent    = user.displayName || '—';
+    document.getElementById('display-name').textContent    = user.displayName || 'No name';
     document.getElementById('display-handle').textContent  = user.email;
-    document.getElementById('display-joined').textContent  = 'Joined ' + new Date(user.metadata.creationTime).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+    document.getElementById('display-joined').textContent  =
+      'Joined ' + new Date(user.metadata.creationTime).toLocaleDateString('en-US', {month:'long', year:'numeric'});
+
+    // حط البيانات في الـ modal
     document.getElementById('edit-name').value  = user.displayName || '';
+    document.getElementById('edit-handle').value = user.displayName || '';
     document.getElementById('edit-email').value = user.email || '';
+
     document.getElementById('skeleton').classList.add('hidden');
     document.getElementById('profile-content').classList.remove('hidden');
   });
 
-  // Sign out بيستخدم Firebase
+  // ── Edit Modal ────────────────────────────────────────────
+  window.openEdit = function() {
+    document.getElementById('modal').classList.add('open');
+  };
+
+  window.closeEdit = function() {
+    document.getElementById('modal').classList.remove('open');
+  };
+
+  window.handleOverlayClick = function(e) {
+    if (e.target === document.getElementById('modal')) window.closeEdit();
+  };
+
+  // ── Save Edit — بيحدث Firebase ───────────────────────────
+  window.saveEdit = async function() {
+    const user     = _auth.currentUser;
+    const name     = document.getElementById('edit-name').value.trim();
+    const newEmail = document.getElementById('edit-email').value.trim();
+    const saveBtn  = document.querySelector('.btn-save');
+
+    if (!name) { showToast('Name is required'); return; }
+
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled    = true;
+
+    try {
+      // تحديث الاسم في Firebase
+      await updateProfile(user, { displayName: name });
+
+      // تحديث الإيميل لو اتغير
+      if (newEmail && newEmail !== user.email) {
+        await updateEmail(user, newEmail);
+      }
+
+      // تحديث الـ UI مباشرة
+      document.getElementById('display-name').textContent    = name;
+      document.getElementById('avatar-initials').textContent = initials(name);
+
+      window.closeEdit();
+      showToast('Profile updated! ✅');
+
+    } catch (err) {
+      const errors = {
+        'auth/requires-recent-login': 'Please log out and log in again to change email',
+        'auth/email-already-in-use':  'This email is already used',
+        'auth/invalid-email':         'Invalid email address',
+      };
+      showToast(errors[err.code] || 'Failed to update: ' + err.message);
+    } finally {
+      saveBtn.textContent = 'Save changes';
+      saveBtn.disabled    = false;
+    }
+  };
+
+  // ── Sign Out ──────────────────────────────────────────────
   window.signOut = async function() {
     if (!confirm('Are you sure you want to sign out?')) return;
     await fbSignOut(_auth);
     window.location.href = '/log';
   };
-
-  function initials(name) {
-    if (!name) return '?';
-    return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-  }
 </script>
 </body>
 </html>
