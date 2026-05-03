@@ -106,6 +106,29 @@
     .footer-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
     .footer-link a:hover { text-decoration: underline; }
 
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--muted); font-size: 0.78rem; margin: 4px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .google-btn {
+      width: 100%; padding: 0.8rem; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .google-btn:hover { background: var(--card-hover, #eaeaef); border-color: var(--border-h); }
+    .google-btn img { width: 18px; height: 18px; }
+    .remember-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; color: var(--muted); margin-top: -4px;
+    }
+    .remember-row input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); }
+
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -142,8 +165,17 @@
 
     <div class="error-msg" id="error-msg"></div>
 
+    <label class="remember-row">
+      <input type="checkbox" id="remember-me"/> Remember me
+    </label>
     <button class="submit-btn" id="submit-btn" onclick="handleLogin()">Log in</button>
   </div>
+
+  <div class="divider">or</div>
+  <button class="google-btn" onclick="handleGoogle()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>
+    Continue with Google
+  </button>
 
   <div class="footer-link">
     Don't have an account? <a href="/reg">Register</a>
@@ -152,10 +184,13 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-  import { initializeApp }                        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-  import { getAuth, signInWithEmailAndPassword }  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  import { initializeApp }                               from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword,
+           GoogleAuthProvider, signInWithPopup,
+           setPersistence, browserLocalPersistence,
+           browserSessionPersistence }                   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-  // ── Firebase Config — حط البيانات بتاعتك هنا ────────────
+  // ── Firebase Config ───────────────────────────────────────
   const firebaseConfig = {
     apiKey:            "YOUR_API_KEY",
     authDomain:        "YOUR_PROJECT.firebaseapp.com",
@@ -165,8 +200,9 @@
     appId:             "YOUR_APP_ID"
   };
 
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const app      = initializeApp(firebaseConfig);
+  const auth     = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
   // ── Toggle Password ───────────────────────────────────────
   window.togglePass = function() {
@@ -183,53 +219,80 @@
     el.style.display = 'block';
   }
 
-  // ── Login ─────────────────────────────────────────────────
+  // ── Save & Redirect ───────────────────────────────────────
+  async function saveAndRedirect(user) {
+    const token = await user.getIdToken();
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify({
+      name:  user.displayName,
+      email: user.email,
+      uid:   user.uid,
+      photo: user.photoURL
+    }));
+    window.location.href = '/home';
+  }
+
+  // ── Login with Email ──────────────────────────────────────
   window.handleLogin = async function() {
     const email    = document.getElementById('email-field').value.trim();
     const password = document.getElementById('password-field').value;
+    const remember = document.getElementById('remember-me').checked;
     const btn      = document.getElementById('submit-btn');
     const errEl    = document.getElementById('error-msg');
 
     errEl.style.display = 'none';
 
     if (!email || !password) {
-      showError('Please fill in all fields');
-      return;
+      showError('Please fill in all fields'); return;
     }
 
     btn.disabled = true;
     btn.textContent = 'Logging in...';
 
     try {
+      // Remember me — لو شايله بيفضل logged in حتى لو اغلق المتصفح
+      await setPersistence(auth,
+        remember ? browserLocalPersistence : browserSessionPersistence
+      );
+
       const userCred = await signInWithEmailAndPassword(auth, email, password);
-      const token    = await userCred.user.getIdToken();
-
-      // احفظ الـ token في localStorage
-      localStorage.setItem('token', token);
-
-      // روح على الـ home
-      window.location.href = '/home';
+      await saveAndRedirect(userCred.user);
 
     } catch (err) {
       btn.disabled = false;
       btn.textContent = 'Log in';
-
-      // رسائل خطأ واضحة
       const errors = {
-        'auth/user-not-found':   'No account with this email',
-        'auth/wrong-password':   'Incorrect password',
-        'auth/invalid-email':    'Invalid email address',
-        'auth/too-many-requests':'Too many attempts, try again later',
+        'auth/user-not-found':     'No account with this email',
+        'auth/wrong-password':     'Incorrect password',
+        'auth/invalid-email':      'Invalid email address',
+        'auth/too-many-requests':  'Too many attempts, try again later',
         'auth/invalid-credential': 'Invalid email or password',
       };
-      showError(errors[err.code] || 'Login failed. Try again.');
+      showError(errors[err.code] || err.message);
     }
   };
 
-  // ── Enter key ────────────────────────────────────────────
+  // ── Login with Google ─────────────────────────────────────
+  window.handleGoogle = async function() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await saveAndRedirect(result.user);
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        showError('Google sign-in failed. Try again.');
+      }
+    }
+  };
+
+  // ── Enter key ─────────────────────────────────────────────
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') window.handleLogin();
   });
+
+  // ── لو المستخدم مسجل قبل كده روح على home ────────────────
+  if (localStorage.getItem('token')) {
+    window.location.href = '/home';
+  }
 </script>
 
 </body>
