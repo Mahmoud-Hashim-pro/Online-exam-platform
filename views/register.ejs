@@ -9,65 +9,51 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #ffffff;
-      --card:      #f4f4f6;
-      --card-hover:#eaeaef;
-      --border:    rgba(0,0,0,0.08);
-      --border-h:  rgba(0,0,0,0.18);
-      --text:      #111114;
-      --muted:     #666672;
-      --accent:    #5a4ee8;
-      --accent2:   #1aaa88;
-      --danger:    #e05252;
+      --bg:      #ffffff;
+      --card:    #f4f4f6;
+      --border:  rgba(0,0,0,0.08);
+      --text:    #111114;
+      --muted:   #666672;
+      --accent:  #5a4ee8;
+      --accent2: #1aaa88;
+      --danger:  #e05252;
     }
-
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg:        #1e1e22;
-        --card:      #313138;
-        --card-hover:#3a3a44;
-        --border:    rgba(255,255,255,0.08);
-        --border-h:  rgba(255,255,255,0.18);
-        --text:      #e8e8ec;
-        --muted:     #8a8a98;
-        --accent:    #7c6ff7;
-        --accent2:   #4fcfae;
-        --danger:    #f27474;
+        --bg:      #1e1e22;
+        --card:    #313138;
+        --border:  rgba(255,255,255,0.08);
+        --text:    #e8e8ec;
+        --muted:   #8a8a98;
+        --accent:  #7c6ff7;
+        --accent2: #4fcfae;
+        --danger:  #f27474;
       }
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: var(--bg); color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
       padding: 2rem 1.5rem;
     }
 
     .page { width: 100%; max-width: 480px; animation: fadeUp 0.3s ease both; }
 
     .header { text-align: center; margin-bottom: 2rem; }
-
     .logo {
-      font-family: 'Space Mono', monospace;
-      font-size: 2.4rem;
-      font-weight: 700;
-      letter-spacing: -2px;
+      font-family: 'Space Mono', monospace; font-size: 2.4rem;
+      font-weight: 700; letter-spacing: -2px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
     .logo-line {
       width: 50px; height: 2px;
       background: linear-gradient(90deg, var(--accent), var(--accent2));
       margin: 0.5rem auto 0; border-radius: 2px;
     }
-
     .header-sub { font-size: 0.85rem; color: var(--muted); margin-top: 0.6rem; }
 
     .form { display: flex; flex-direction: column; gap: 12px; }
@@ -75,19 +61,13 @@
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
     .field { display: flex; flex-direction: column; gap: 6px; }
-
     label { font-size: 0.8rem; font-weight: 500; color: var(--muted); }
 
     input {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      color: var(--text);
-      outline: none;
+      width: 100%; background: var(--card);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.75rem 1rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; color: var(--text); outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
     input::placeholder { color: var(--muted); opacity: 0.6; }
@@ -95,7 +75,6 @@
 
     .pass-wrap { position: relative; }
     .pass-wrap input { padding-right: 2.8rem; }
-
     .pass-toggle {
       position: absolute; right: 12px; top: 50%;
       transform: translateY(-50%);
@@ -103,12 +82,16 @@
       color: var(--muted); padding: 0; display: flex; align-items: center;
     }
     .pass-toggle svg {
-      width: 18px; height: 18px;
-      stroke: currentColor; fill: none;
-      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      width: 18px; height: 18px; stroke: currentColor;
+      fill: none; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
     }
 
-    .error-msg { font-size: 0.78rem; color: var(--danger); display: none; margin-top: 2px; }
+    .error-msg {
+      background: rgba(224,82,82,0.1); border: 1px solid rgba(224,82,82,0.3);
+      border-radius: 8px; padding: 10px 12px;
+      color: var(--danger); font-size: 0.82rem; display: none;
+    }
 
     .submit-btn {
       width: 100%; padding: 0.85rem; border-radius: 12px; border: none;
@@ -119,6 +102,7 @@
     }
     .submit-btn:hover  { opacity: 0.9; }
     .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .footer-link { text-align: center; font-size: 0.82rem; color: var(--muted); margin-top: 1.2rem; }
     .footer-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
@@ -133,77 +117,165 @@
 <body>
 
 <div class="page">
-
   <div class="header">
     <div class="logo"><%= logoName %></div>
     <div class="logo-line"></div>
     <div class="header-sub">Create a new account</div>
   </div>
 
-  <form class="form" action="/reg" method="POST">
+  <div class="form">
 
     <div class="field">
       <label for="username-field">Username</label>
-      <input autofocus id="username-field" name="username" type="text" placeholder="Enter username"/>
+      <input autofocus id="username-field" type="text" placeholder="Enter username"/>
     </div>
 
     <div class="row">
       <div class="field">
         <label for="firstname-field">First name</label>
-        <input id="firstname-field" name="firstname" type="text" placeholder="First"/>
+        <input id="firstname-field" type="text" placeholder="First"/>
       </div>
       <div class="field">
         <label for="lastname-field">Last name</label>
-        <input id="lastname-field" name="lastname" type="text" placeholder="Last"/>
+        <input id="lastname-field" type="text" placeholder="Last"/>
       </div>
+    </div>
+
+    <div class="field">
+      <label for="email-field">Email</label>
+      <input id="email-field" type="email" placeholder="Enter your email"/>
     </div>
 
     <div class="field">
       <label for="password-field">Password</label>
       <div class="pass-wrap">
-        <input id="password-field" name="password" type="password" placeholder="Enter password"/>
-        <button type="button" class="pass-toggle" onclick="togglePass('password-field', this)">
-          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <input id="password-field" type="password" placeholder="Enter password"/>
+        <button type="button" class="pass-toggle" onclick="togglePass('password-field', 'eye1')">
+          <svg id="eye1" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
         </button>
       </div>
     </div>
 
     <div class="field">
-      <label for="ensure-password-field">Confirm password</label>
+      <label for="confirm-field">Confirm password</label>
       <div class="pass-wrap">
-        <input id="ensure-password-field" name="confirm_password" type="password" placeholder="Repeat password"/>
-        <button type="button" class="pass-toggle" onclick="togglePass('ensure-password-field', this)">
-          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <input id="confirm-field" type="password" placeholder="Repeat password"/>
+        <button type="button" class="pass-toggle" onclick="togglePass('confirm-field', 'eye2')">
+          <svg id="eye2" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
         </button>
       </div>
-      <span class="error-msg" id="pass-error">Passwords do not match</span>
     </div>
 
-    <button type="submit" class="submit-btn" onclick="return validate()">Register</button>
+    <div class="error-msg" id="error-msg"></div>
 
-  </form>
+    <button class="submit-btn" id="submit-btn" onclick="handleRegister()">Register</button>
+
+  </div>
 
   <div class="footer-link">
     Already have an account? <a href="/log">Log in</a>
   </div>
-
 </div>
 
-<script>
-  function togglePass(fieldId, btn) {
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  // ── Firebase Config — حط البيانات بتاعتك هنا ────────────
+  const firebaseConfig = {
+    apiKey:            "YOUR_API_KEY",
+    authDomain:        "YOUR_PROJECT.firebaseapp.com",
+    projectId:         "YOUR_PROJECT_ID",
+    storageBucket:     "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId:             "YOUR_APP_ID"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // ── Toggle Password ───────────────────────────────────────
+  window.togglePass = function(fieldId, iconId) {
     const input = document.getElementById(fieldId);
     input.type = input.type === 'password' ? 'text' : 'password';
-    btn.style.opacity = input.type === 'text' ? '0.5' : '1';
+    document.getElementById(iconId).style.opacity =
+      input.type === 'text' ? '0.4' : '1';
+  };
+
+  // ── Show Error ────────────────────────────────────────────
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
   }
 
-  function validate() {
-    const p1 = document.getElementById('password-field').value;
-    const p2 = document.getElementById('ensure-password-field').value;
-    const err = document.getElementById('pass-error');
-    if (p1 !== p2) { err.style.display = 'block'; return false; }
-    err.style.display = 'none';
-    return true;
-  }
+  // ── Register ──────────────────────────────────────────────
+  window.handleRegister = async function() {
+    const username  = document.getElementById('username-field').value.trim();
+    const firstname = document.getElementById('firstname-field').value.trim();
+    const lastname  = document.getElementById('lastname-field').value.trim();
+    const email     = document.getElementById('email-field').value.trim();
+    const password  = document.getElementById('password-field').value;
+    const confirm   = document.getElementById('confirm-field').value;
+    const btn       = document.getElementById('submit-btn');
+    const errEl     = document.getElementById('error-msg');
+
+    errEl.style.display = 'none';
+
+    // Validation
+    if (!username || !firstname || !lastname || !email || !password) {
+      showError('Please fill in all fields'); return;
+    }
+    if (password !== confirm) {
+      showError('Passwords do not match'); return;
+    }
+    if (password.length < 6) {
+      showError('Password must be at least 6 characters'); return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Creating account...';
+
+    try {
+      // إنشاء الحساب في Firebase
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+
+      // حفظ الاسم في Firebase profile
+      await updateProfile(userCred.user, {
+        displayName: `${firstname} ${lastname}`
+      });
+
+      // جيب الـ token واحفظه
+      const token = await userCred.user.getIdToken();
+      localStorage.setItem('token', token);
+
+      // روح على الـ home
+      window.location.href = '/home';
+
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Register';
+
+      const errors = {
+        'auth/email-already-in-use': 'This email is already registered',
+        'auth/invalid-email':        'Invalid email address',
+        'auth/weak-password':        'Password is too weak',
+      };
+      showError(errors[err.code] || 'Registration failed. Try again.');
+    }
+  };
+
+  // ── Enter key ─────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.handleRegister();
+  });
 </script>
 
 </body>
