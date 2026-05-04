@@ -39,7 +39,7 @@
       padding: 2rem 1.5rem;
     }
 
-    .page { width: 100%; max-width: 480px; animation: fadeUp 0.3s ease both; }
+    .page { width: 100%; max-width: 420px; animation: fadeUp 0.3s ease both; }
 
     .header { text-align: center; margin-bottom: 2rem; }
     .logo {
@@ -104,11 +104,6 @@
     .submit-btn:active { transform: scale(0.99); }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .footer-link { text-align: center; font-size: 0.82rem; color: var(--muted); margin-top: 1.2rem; }
-    .footer-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
-    .footer-link a:hover { text-decoration: underline; }
-
-    /* ── Divider ── */
     .divider {
       display: flex; align-items: center; gap: 10px;
       color: var(--muted); font-size: 0.78rem; margin: 4px 0;
@@ -117,7 +112,6 @@
       content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
-    /* ── Google Button ── */
     .google-btn {
       width: 100%; padding: 0.8rem; border-radius: 12px;
       border: 1px solid var(--border); background: var(--card);
@@ -126,8 +120,12 @@
       display: flex; align-items: center; justify-content: center; gap: 10px;
       transition: background 0.15s, border-color 0.15s;
     }
-    .google-btn:hover { background: var(--card-hover, #eaeaef); border-color: var(--border-h); }
+    .google-btn:hover { background: var(--card-hover, #eaeaef); border-color: var(--border); }
     .google-btn img { width: 18px; height: 18px; }
+
+    .footer-link { text-align: center; font-size: 0.82rem; color: var(--muted); margin-top: 1.2rem; }
+    .footer-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .footer-link a:hover { text-decoration: underline; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
@@ -147,8 +145,8 @@
   <div class="form">
 
     <div class="field">
-      <label for="username-field">Username</label>
-      <input autofocus id="username-field" type="text" placeholder="Enter username"/>
+      <label for="email-field">Email</label>
+      <input autofocus id="email-field" type="email" placeholder="Enter your email"/>
     </div>
 
     <div class="row">
@@ -160,11 +158,6 @@
         <label for="lastname-field">Last name</label>
         <input id="lastname-field" type="text" placeholder="Last"/>
       </div>
-    </div>
-
-    <div class="field">
-      <label for="email-field">Email</label>
-      <input id="email-field" type="email" placeholder="Enter your email"/>
     </div>
 
     <div class="field">
@@ -214,9 +207,8 @@
 <script type="module">
   import { initializeApp }                                          from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, createUserWithEmailAndPassword, updateProfile,
-           GoogleAuthProvider, signInWithPopup }                   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+           GoogleAuthProvider, signInWithPopup, onAuthStateChanged }   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-  //  Firebase Config 
   const firebaseConfig = {
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
     authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
@@ -230,7 +222,7 @@
   const auth     = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  // Toggle Password 
+  // ── Toggle Password ───────────────────────────────────────
   window.togglePass = function(fieldId, iconId) {
     const input = document.getElementById(fieldId);
     input.type = input.type === 'password' ? 'text' : 'password';
@@ -238,18 +230,15 @@
       input.type === 'text' ? '0.4' : '1';
   };
 
-  //  Show Error 
+  // ── Show Error ────────────────────────────────────────────
   function showError(msg) {
     const el = document.getElementById('error-msg');
     el.textContent = msg;
     el.style.display = 'block';
   }
 
-  //  Save token 
+  // ── Save & Redirect ───────────────────────────────────────
   async function saveAndRedirect(user) {
-    const token = await user.getIdToken();
-    localStorage.setItem('token', token);
-    // حفظ بيانات المستخدم للـ "remember me"
     localStorage.setItem('user', JSON.stringify({
       name:  user.displayName,
       email: user.email,
@@ -259,12 +248,11 @@
     window.location.href = '/home';
   }
 
-  //  Register with Email 
+  // ── Register with Email ───────────────────────────────────
   window.handleRegister = async function() {
-    const username  = document.getElementById('username-field').value.trim();
+    const email     = document.getElementById('email-field').value.trim();
     const firstname = document.getElementById('firstname-field').value.trim();
     const lastname  = document.getElementById('lastname-field').value.trim();
-    const email     = document.getElementById('email-field').value.trim();
     const password  = document.getElementById('password-field').value;
     const confirm   = document.getElementById('confirm-field').value;
     const btn       = document.getElementById('submit-btn');
@@ -272,7 +260,7 @@
 
     errEl.style.display = 'none';
 
-    if (!username || !firstname || !lastname || !email || !password) {
+    if (!email || !firstname || !lastname || !password) {
       showError('Please fill in all fields'); return;
     }
     if (password !== confirm) {
@@ -304,7 +292,7 @@
     }
   };
 
-  //  Register / Login with Google
+  // ── Register / Login with Google ──────────────────────────
   window.handleGoogle = async function() {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -316,13 +304,12 @@
     }
   };
 
-  //  Enter key 
+  // ── Enter key ─────────────────────────────────────────────
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') window.handleRegister();
   });
 
-  //  لو المستخدم مسجل قبل كده روح على home 
-  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+  // ── لو المستخدم مسجل قبل كده روح على home ────────────────
   onAuthStateChanged(auth, (user) => {
     if (user) window.location.href = '/home';
   });
