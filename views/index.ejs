@@ -1,111 +1,155 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title><%= pageTitle %></title>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <style>
-            
-            :root {
-                --bg-color: #ffffff;
-                --text-color: #232323;
-                --border-color: grey;
-            }
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= pageTitle %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            @media (prefers-color-scheme: dark) {
-                :root {
-                    --bg-color: #232323;
-                    --text-color: #f8f8f8;
-                    --border-color: white;
-                }
-            }
+    :root {
+      --bg:        #ffffff;
+      --card:      #f4f4f6;
+      --card-hover:#eaeaef;
+      --border:    rgba(0,0,0,0.08);
+      --border-h:  rgba(0,0,0,0.18);
+      --text:      #111114;
+      --muted:     #666672;
+      --accent:    #5a4ee8;
+      --accent2:   #1aaa88;
+      --red:       #e05252;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #1e1e22;
+        --card:      #313138;
+        --card-hover:#3a3a44;
+        --border:    rgba(255,255,255,0.08);
+        --border-h:  rgba(255,255,255,0.18);
+        --text:      #e8e8ec;
+        --muted:     #8a8a98;
+        --accent:    #7c6ff7;
+        --accent2:   #4fcfae;
+        --red:       #f27474;
+      }
+    }
 
-            body {
-                background-color: var(--bg-color);
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            
-            #container {
-                min-width: 720px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 24px;
-            }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
+      padding: 2rem 1.5rem;
+    }
 
-            #enteries {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                grid-template-areas: 
-                    'login register' 
-                    'about about';
-                justify-content: center;
-                gap: 14px;
-            }
+    .page { width: 100%; max-width: 420px; animation: fadeUp 0.3s ease both; }
 
-            span, 
-            p {
-                color: var(--text-color);
-            }
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 2rem; }
+    .logo {
+      font-family: 'Space Mono', monospace; font-size: 2.4rem;
+      font-weight: 700; letter-spacing: -2px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-line {
+      width: 50px; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      margin: 0.5rem auto 0; border-radius: 2px;
+    }
 
-            #login,
-            #register,
-            #about {
-                display: grid;
-                grid-template-columns: 80px 1fr;
-                border-radius: 6px;
-                border: 1px solid var(--border-color);
-                padding: 10px;
-                align-items: center;
-            }
+    /* ── Cards ── */
+    .cards { display: flex; flex-direction: column; gap: 10px; }
 
-            #horizontal {
-                width: 72px;
-                height: 2px;
-                background-color: var(--border-color);
-                margin-bottom: 40px;
-            }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-            i {
-                color: var(--text-color);
-                user-select: none;
-                font-size: 128px;
-            }
+    .card {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1rem 1.2rem;
+      text-decoration: none; color: var(--text);
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+    .card:hover {
+      background: var(--card-hover); border-color: var(--border-h);
+      transform: translateY(-2px);
+    }
 
-        </style>
-    </head>
-    <body>
-        <div id="container">
-            <span style="font-size: 64px; margin-bottom: 48px"><%= logoName %></span>
-            <div id="horizontal"></div>
-            <div id="enteries">
-                <div id="login" style="grid-area: login">
-                    <i class="material-icons" style="font-size: 48px;">add</i>
-                    <div>
-                        <span style="font-size: 24px">Login</span>
-                        <p>Create a new account.</p>
-                    </div>
-                </div>
-                <div id="register" style="grid-area: register">
-                    <i class="material-icons" style="font-size: 48px;">person</i>
-                    <div>
-                        <span style="font-size: 24px">Register</span>
-                        <p>Join with your account.</p>
-                    </div>
-                </div>
-                <div id="about" style="grid-area: about">
-                    <i class="material-icons" style="font-size: 48px;">star</i>
-                    <div>
-                        <span style="font-size: 24px">About</span>
-                        <p>View website information.</p>
-                    </div>
-                </div>
-            </div>
+    .icon-wrap {
+      width: 36px; height: 36px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(90,78,232,0.12); flex-shrink: 0;
+    }
+    .icon-wrap svg {
+      width: 18px; height: 18px; stroke: var(--accent);
+      fill: none; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* colors */
+    .card.amber .icon-wrap { background: rgba(245,158,11,0.12); }
+    .card.amber .icon-wrap svg { stroke: #f59e0b; }
+    .card.green .icon-wrap { background: rgba(26,170,136,0.12); }
+    .card.green .icon-wrap svg { stroke: var(--accent2); }
+
+    .card-title { font-size: 0.92rem; font-weight: 600; }
+    .card-desc  { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <div class="logo"><%= logoName %></div>
+    <div class="logo-line"></div>
+  </div>
+
+  <div class="cards">
+
+    <!-- Register — كبير فوق -->
+    <a href="/reg" class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="card-text">
+        <div class="card-title">Register</div>
+        <div class="card-desc">Join using your account</div>
+      </div>
+    </a>
+
+    <!-- About + Log-In — صغار تحت -->
+    <div class="row">
+      <a href="/about" class="card amber">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
-    </body>
+        <div class="card-text">
+          <div class="card-title">About</div>
+          <div class="card-desc">View information about the website</div>
+        </div>
+      </a>
+
+      <a href="/log" class="card green">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </div>
+        <div class="card-text">
+          <div class="card-title">Log-In</div>
+          <div class="card-desc">Join in using your account</div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+</body>
 </html>
