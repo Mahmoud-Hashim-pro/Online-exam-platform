@@ -169,7 +169,7 @@ app.all('/{*any}', (req, res) => {
 // ═══════════════════════════════════════════════════════════
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-	console.log(`\n✅ Quizer running → http://localhost:${PORT}\n`);
+	console.log(`\nQuizer running → http://localhost:${PORT}\n`);
 	console.log('  /          → Home (sign-in.ejs)');
 	console.log('  /log       → Login');
 	console.log('  /reg       → Register');
