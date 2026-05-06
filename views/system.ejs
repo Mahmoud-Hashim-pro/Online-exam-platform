@@ -461,7 +461,7 @@
         <a href="#" class="panel-action">View all</a>
       </div>
       <div class="activity-list" id="activity-list">
-        <!-- من الـ server -->
+        <!-- from server -->
       </div>
     </div>
 
@@ -481,7 +481,7 @@
           </tr>
         </thead>
         <tbody id="quiz-table-body">
-          <!-- من الـ server -->
+          <!-- from server -->
         </tbody>
       </table>
     </div>
@@ -509,7 +509,7 @@
         </tr>
       </thead>
       <tbody id="db-table-body">
-        <!-- من الـ server -->
+        <!-- from server -->
       </tbody>
     </table>
   </div>
@@ -517,7 +517,7 @@
 </main>
 
 <script>
-  // ── بتجيب البيانات من الـ server ─────────────────────────
+  // ── get data from server ─────────────────────────
   async function loadDashboard() {
     const res  = await fetch('/api/admin/stats');
     const data = await res.json();
@@ -1096,7 +1096,7 @@
         </tr>
       </thead>
       <tbody id="db-table-body">
-        <!-- من الـ server -->
+        <!-- from server -->
       </tbody>
     </table>
   </div>
@@ -1104,7 +1104,7 @@
 </main>
 
 <script>
-  // ── بتجيب البيانات من الـ server ─────────────────────────
+  // ── get data from server ─────────────────────────
   async function loadDashboard() {
     const res  = await fetch('/api/admin/stats');
     const data = await res.json();
