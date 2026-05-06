@@ -9,10 +9,10 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// ── Static files (CSS / images / JS لو في) ───────────────
+// ── Static files (CSS / images / JS ) ───────────────
 // app.use(express.static(path.join(__dirname, 'public')));
 
-// ── Shared data بيتبعت لكل الصفحات ──────────────────────
+// ── Shared data ──────────────────────
 const sharedRenderData = {
 	pageTitle: "Quizer",
 	logoName:  "Quizer"
@@ -27,12 +27,12 @@ const sharedRenderData = {
 // ROUTES
 // ═══════════════════════════════════════════════════════════
 
-// ── Register — الصفحة الأولى اللي بتظهر ─────────────────
+// ── Register —  ─────────────────
 app.get('/', (req, res) => {
 	res.render('register.ejs', sharedRenderData);
 });
 
-// ── Home (sign-in.ejs) — الصفحة الرئيسية بالكروت الـ 6 ──
+// ── Home (sign-in.ejs)  ──
 app.get('/home', (req, res) => {
 	res.render('sign-in.ejs', sharedRenderData);
 });
@@ -52,7 +52,7 @@ app.get('/reg', (req, res) => {
 	res.render('register.ejs', sharedRenderData);
 });
 
-// ── Register POST — بيستقبل الـ form ────────────────────
+// ── Register POST — receives form ────────────────────
 app.post('/reg', (req, res) => {
 	const { username, firstname, lastname, password, confirm_password } = req.body;
 	// TODO: save to database
@@ -94,7 +94,7 @@ app.get('/quiz/:id', (req, res) => {
 
 // ── Sign Out ──────────────────────────────────────────────
 app.get('/signout', (req, res) => {
-	// لما تضيف sessions: req.session.destroy()
+	// when you add sessions: req.session.destroy()
 	res.redirect('/');
 });
 
@@ -103,9 +103,9 @@ app.get('/sys', (req, res) => {
 	res.render('system.ejs', sharedRenderData);
 });
 
-// ── API: Admin Stats (للـ system.ejs) ────────────────────
+// ── API: Admin Stats ( system.ejs) ────────────────────
 app.get('/api/admin/stats', (req, res) => {
-	// TODO: جيب البيانات الحقيقية من الـ database
+	// TODO: Get the real data from the database
 	res.json({
 		stats: {
 			users:          0,
@@ -123,16 +123,16 @@ app.get('/api/admin/stats', (req, res) => {
 	});
 });
 
-// ── API: Search (للـ search.ejs) ──────────────────────────
+// ── API: Search ( search.ejs) ──────────────────────────
 app.get('/api/search', (req, res) => {
 	const q = (req.query.q || '').toLowerCase();
-	// TODO: بحث حقيقي في الـ database
+	// TODO: Real database search
 	res.json([]);
 });
 
-// ── API: Profile (للـ profile.ejs) ────────────────────────
+// ── API: Profile ( profile.ejs) ────────────────────────
 app.get('/api/me', (req, res) => {
-	// TODO: رجّع بيانات المستخدم الحالي
+	// TODO: Restore current user data
 	res.status(401).json({ error: 'Not authenticated' });
 });
 
@@ -149,7 +149,7 @@ app.get('/api/me/history', (req, res) => {
 });
 
 app.patch('/api/me', (req, res) => {
-	// TODO: تحديث بيانات المستخدم في الـ database
+	// TODO: Update user data in the database
 	res.json({ success: true });
 });
 
@@ -157,7 +157,7 @@ app.post('/api/auth/signout', (req, res) => {
 	res.json({ success: true });
 });
 
-// ── 404 — لازم تبقى آخر route ────────────────────────────
+// ── 404 — last route ────────────────────────────
 // Source: https://stackoverflow.com/a/79554232 — Donggi Kim, CC BY-SA 4.0
 app.all('/{*any}', (req, res) => {
 	res.status(404).render('404.ejs', {
