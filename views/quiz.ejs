@@ -63,6 +63,9 @@
     /* Loading */
     .loading { text-align:center; padding:4rem 1rem; color:var(--muted); font-size:0.9rem; }
     .loading svg { width:40px; height:40px; stroke:var(--muted); fill:none; stroke-width:1.5; margin:0 auto 1rem; display:block; animation:spin 1s linear infinite; }
+    .essay-textarea { width:100%; min-height:120px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px; font-family:'DM Sans',sans-serif; font-size:0.9rem; color:var(--text); outline:none; resize:vertical; transition:border-color 0.15s, box-shadow 0.15s; }
+    .essay-textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(90,78,232,0.12); }
+    .essay-label { font-size:0.8rem; color:var(--muted); margin-bottom:8px; display:block; }
     @keyframes spin { to { transform:rotate(360deg); } }
   </style>
 </head>
@@ -164,7 +167,6 @@
     const tot = quiz.questions.length;
     current   = idx;
 
-    // Progress
     const pct = Math.round((idx / tot) * 100);
     document.getElementById('progress-text').textContent = `Question ${idx+1} of ${tot}`;
     document.getElementById('progress-pct').textContent  = pct + '%';
@@ -172,30 +174,60 @@
     document.getElementById('q-number').textContent = `QUESTION ${idx+1}`;
     document.getElementById('q-text').textContent   = q.text;
 
-    // Options
     const optDiv = document.getElementById('options');
     optDiv.innerHTML = '';
-    const letters = ['A','B','C','D'];
-    letters.forEach(l => {
-      if (!q.options[l]) return;
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      if (answers[idx] === l) btn.classList.add('selected');
-      btn.innerHTML = `<span class="option-letter">${l}</span>${q.options[l]}`;
-      btn.onclick = () => selectAnswer(idx, l);
-      optDiv.appendChild(btn);
-    });
 
-    // Nav buttons
+    if (q.type === 'essay') {
+      // Essay — textarea
+      const label = document.createElement('span');
+      label.className = 'essay-label';
+      label.textContent = 'Write your answer:';
+      optDiv.appendChild(label);
+
+      const ta = document.createElement('textarea');
+      ta.className   = 'essay-textarea';
+      ta.id          = 'essay-' + idx;
+      ta.placeholder = 'Type your answer here…';
+      ta.value       = answers[idx] || '';
+      ta.oninput     = () => { answers[idx] = ta.value; };
+      optDiv.appendChild(ta);
+
+    } else if (q.type === 'tf') {
+      // True / False
+      ['True','False'].forEach(val => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        if (answers[idx] === val) btn.classList.add('selected');
+        btn.innerHTML = `<span class="option-letter">${val === 'True' ? '✅' : '❌'}</span>${val}`;
+        btn.onclick = () => selectAnswer(idx, val, 'tf');
+        optDiv.appendChild(btn);
+      });
+    } else {
+      // MCQ
+      const letters = ['A','B','C','D'];
+      letters.forEach(l => {
+        if (!q.options || !q.options[l]) return;
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        if (answers[idx] === l) btn.classList.add('selected');
+        btn.innerHTML = `<span class="option-letter">${l}</span>${q.options[l]}`;
+        btn.onclick = () => selectAnswer(idx, l, 'mcq');
+        optDiv.appendChild(btn);
+      });
+    }
+
     document.getElementById('prev-btn').disabled = idx === 0;
     document.getElementById('next-btn').textContent = idx === tot-1 ? 'Submit ✅' : 'Next →';
   }
 
-  function selectAnswer(idx, letter) {
-    answers[idx] = letter;
-    document.querySelectorAll('.option-btn').forEach((btn, i) => {
-      const l = ['A','B','C','D'].filter(x => quiz.questions[idx].options[x])[i];
-      btn.classList.toggle('selected', l === letter);
+  function selectAnswer(idx, value, type) {
+    answers[idx] = value;
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      const label = btn.querySelector('.option-letter').textContent;
+      const match = type === 'tf'
+        ? (value === 'True' ? '✅' : '❌') === label
+        : label === value;
+      btn.classList.toggle('selected', match);
     });
   }
 
@@ -210,18 +242,37 @@
   };
 
   function showResult() {
-    let score = 0;
-    quiz.questions.forEach((q, i) => { if (answers[i] === q.correct) score++; });
-    const tot = quiz.questions.length;
-    const pct = Math.round((score/tot)*100);
+    // احسب بس الأسئلة اللي ليها إجابة صح (MCQ + TF)
+    let score    = 0;
+    let gradable = 0;
+    let essayCount = 0;
 
-    document.getElementById('quiz-ui').style.display  = 'none';
+    quiz.questions.forEach((q, i) => {
+      if (q.type === 'essay') {
+        essayCount++;
+      } else {
+        gradable++;
+        if (answers[i] === q.correct) score++;
+      }
+    });
+
+    const pct = gradable > 0 ? Math.round((score / gradable) * 100) : 0;
+
+    document.getElementById('quiz-ui').style.display = 'none';
     document.getElementById('result').classList.add('show');
-    document.getElementById('result-score').textContent = `${score}/${tot}`;
-    document.getElementById('result-msg').textContent   =
-      pct >= 80 ? '🏆 Excellent work!' :
-      pct >= 60 ? '👍 Good job!' :
-      pct >= 40 ? '📚 Keep practicing!' : '💪 Try again!';
+    document.getElementById('result-score').textContent =
+      gradable > 0 ? `${score}/${gradable}` : '—';
+
+    let msg = pct >= 80 ? '🏆 Excellent work!' :
+              pct >= 60 ? '👍 Good job!' :
+              pct >= 40 ? '📚 Keep practicing!' : '💪 Try again!';
+
+    if (essayCount > 0) {
+      msg += `
+📝 ${essayCount} essay question${essayCount > 1 ? 's' : ''} will be reviewed manually.`;
+    }
+
+    document.getElementById('result-msg').textContent = msg;
   }
 </script>
 </body>
