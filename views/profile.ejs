@@ -407,14 +407,14 @@
   onAuthStateChanged(_auth, user => {
     if (!user) { window.location.href = '/log'; return; }
 
-    // ملي البيانات من Firebase
+    // get data from Firebase
     document.getElementById('avatar-initials').textContent = initials(user.displayName || user.email);
     document.getElementById('display-name').textContent    = user.displayName || 'No name';
     document.getElementById('display-handle').textContent  = user.email;
     document.getElementById('display-joined').textContent  =
       'Joined ' + new Date(user.metadata.creationTime).toLocaleDateString('en-US', {month:'long', year:'numeric'});
 
-    // حط البيانات في الـ modal
+    // put data in the modal
     document.getElementById('edit-name').value  = user.displayName || '';
     document.getElementById('edit-handle').value = user.displayName || '';
     document.getElementById('edit-email').value = user.email || '';
@@ -449,15 +449,15 @@
     saveBtn.disabled    = true;
 
     try {
-      // تحديث الاسم في Firebase
+      // update name in Firebase
       await updateProfile(user, { displayName: name });
 
-      // تحديث الإيميل لو اتغير
+      // update email if changed
       if (newEmail && newEmail !== user.email) {
         await updateEmail(user, newEmail);
       }
 
-      // تحديث الـ UI مباشرة
+      //live update in UI
       document.getElementById('display-name').textContent    = name;
       document.getElementById('avatar-initials').textContent = initials(name);
 
