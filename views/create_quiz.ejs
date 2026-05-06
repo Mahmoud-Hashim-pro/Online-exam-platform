@@ -19,55 +19,74 @@
         --text:#e8e8ec; --muted:#8a8a98; --accent:#7c6ff7; --accent2:#4fcfae; --danger:#f27474;
       }
     }
-    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; display:flex; justify-content:center; padding:2rem 1rem; }
+    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; display:flex; justify-content:center; padding:2rem 1rem 4rem; }
     .page { width:100%; max-width:560px; }
     .header { display:flex; align-items:center; gap:14px; margin-bottom:2rem; }
-    .back-btn { width:38px; height:38px; border-radius:10px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; text-decoration:none; transition:background 0.15s; flex-shrink:0; }
-    .back-btn:hover { background:var(--card-hover); }
+    .back-btn { width:38px; height:38px; border-radius:10px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; text-decoration:none; flex-shrink:0; }
     .back-btn svg { width:18px; height:18px; stroke:var(--text); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
     .page-title { font-size:1.4rem; font-weight:600; }
-    .field { margin-bottom:1rem; }
-    label { display:block; font-size:0.85rem; font-weight:500; margin-bottom:6px; }
-    input[type="text"], textarea, select {
+
+    label { display:block; font-size:0.82rem; font-weight:500; color:var(--muted); margin-bottom:5px; }
+    input[type="text"], textarea {
       width:100%; padding:10px 13px; background:var(--card); border:1px solid var(--border);
       border-radius:10px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem;
       outline:none; transition:border-color 0.15s, box-shadow 0.15s; resize:none;
     }
-    input[type="text"]:focus, textarea:focus, select:focus {
-      border-color:var(--accent); box-shadow:0 0 0 3px rgba(90,78,232,0.12);
-    }
-    select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; padding-right:36px; cursor:pointer; }
-    .section-label { font-size:0.7rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem; }
+    input[type="text"]:focus, textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(90,78,232,0.12); }
+    .field { margin-bottom:1rem; }
+
+    .section-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; }
+    .section-label { font-size:0.7rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--muted); }
     .q-counter { font-size:0.75rem; color:var(--muted); }
-    .q-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.1rem; margin-bottom:12px; }
+
+    /* Question card */
+    .q-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.1rem; margin-bottom:12px; animation:fadeUp 0.2s ease both; }
     .q-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.85rem; }
     .q-badge { font-size:0.7rem; font-weight:600; letter-spacing:0.05em; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    .remove-btn { width:26px; height:26px; border-radius:7px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s, color 0.15s; }
+    .remove-btn { width:26px; height:26px; border-radius:7px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
     .remove-btn:hover { background:rgba(224,82,82,0.1); color:var(--danger); border-color:var(--danger); }
-    .q-card input[type="text"] { margin-bottom:0.7rem; }
+
+    /* Type toggle */
+    .type-toggle { display:flex; gap:6px; margin-bottom:0.85rem; }
+    .type-btn { flex:1; padding:6px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:0.78rem; font-weight:500; cursor:pointer; transition:all 0.15s; }
+    .type-btn.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-color:transparent; }
+
+    /* MCQ options */
     .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:0.75rem; }
-    .option-input-wrap { position:relative; }
-    .option-letter { position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:0.75rem; font-weight:600; color:var(--muted); pointer-events:none; }
-    .option-input-wrap input { padding-left:28px; }
+    .option-wrap { position:relative; }
+    .option-letter { position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:0.72rem; font-weight:700; color:var(--muted); pointer-events:none; }
+    .option-wrap input { padding-left:26px; }
+
+    /* True/False options */
+    .tf-row { display:flex; gap:8px; margin-bottom:0.75rem; }
+    .tf-btn { flex:1; padding:10px; border-radius:10px; border:1.5px solid var(--border); background:transparent; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:500; cursor:pointer; transition:all 0.15s; }
+    .tf-btn.selected-true  { border-color:var(--accent2); background:rgba(26,170,136,0.1); color:var(--accent2); }
+    .tf-btn.selected-false { border-color:var(--danger);  background:rgba(224,82,82,0.08); color:var(--danger); }
+
     .correct-row { display:flex; align-items:center; gap:10px; }
-    .correct-row label { font-size:0.8rem; color:var(--muted); margin-bottom:0; white-space:nowrap; }
-    .add-q-btn { width:100%; padding:11px; border-radius:12px; border:1.5px dashed var(--border-h); background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:0.9rem; cursor:pointer; margin-bottom:1.5rem; transition:background 0.15s, color 0.15s; }
+    .correct-row label { font-size:0.8rem; margin-bottom:0; white-space:nowrap; }
+    select { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:7px 10px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none; cursor:pointer; }
+
+    .add-q-btn { width:100%; padding:11px; border-radius:12px; border:1.5px dashed var(--border-h); background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:0.9rem; cursor:pointer; margin-bottom:1.2rem; transition:background 0.15s, color 0.15s; }
     .add-q-btn:hover { background:var(--card); color:var(--text); }
-    .publish-btn { width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; transition:opacity 0.15s, transform 0.1s; margin-bottom:2rem; }
-    .publish-btn:hover { opacity:0.9; }
-    .publish-btn:disabled { opacity:0.6; cursor:not-allowed; }
 
     /* Share box */
-    .share-box { display:none; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.2rem; margin-bottom:1.5rem; }
+    .share-box { display:none; background:rgba(26,170,136,0.08); border:1px solid rgba(26,170,136,0.3); border-radius:14px; padding:1.2rem; margin-bottom:1rem; }
     .share-box.show { display:block; }
-    .share-title { font-size:0.85rem; font-weight:600; margin-bottom:8px; color:var(--accent2); }
+    .share-title { font-size:0.88rem; font-weight:600; color:var(--accent2); margin-bottom:10px; }
     .share-link-wrap { display:flex; gap:8px; }
-    .share-link-input { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:9px 12px; font-size:0.82rem; color:var(--muted); font-family:'Space Mono',monospace; outline:none; }
-    .copy-btn { padding:9px 14px; border-radius:10px; border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:0.82rem; font-weight:600; cursor:pointer; white-space:nowrap; }
-    .copy-btn:active { opacity:0.8; }
+    .share-link-input { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:9px 12px; font-size:0.78rem; color:var(--muted); font-family:'Space Mono',monospace; outline:none; }
+    .copy-btn { padding:9px 14px; border-radius:10px; border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:0.82rem; font-weight:600; cursor:pointer; }
 
-    .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:var(--bg); padding:10px 20px; border-radius:99px; font-size:0.85rem; font-weight:500; opacity:0; transition:opacity 0.25s, transform 0.25s; pointer-events:none; white-space:nowrap; }
+    .publish-btn { width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; margin-bottom:1rem; }
+    .publish-btn:disabled { opacity:0.6; cursor:not-allowed; }
+
+    .error-msg { background:rgba(224,82,82,0.1); border:1px solid rgba(224,82,82,0.3); border-radius:10px; padding:10px 13px; color:var(--danger); font-size:0.82rem; display:none; margin-bottom:1rem; }
+
+    .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:var(--bg); padding:10px 20px; border-radius:99px; font-size:0.85rem; font-weight:500; opacity:0; transition:opacity 0.25s, transform 0.25s; pointer-events:none; }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
   </style>
 </head>
 <body>
@@ -80,23 +99,25 @@
   </div>
 
   <div class="field">
-    <label for="quiz-title">Quiz title <span style="color:var(--danger)">*</span></label>
-    <input type="text" id="quiz-title" placeholder="e.g. World Geography 101" maxlength="80">
+    <label>Quiz title *</label>
+    <input type="text" id="quiz-title" placeholder="e.g. World Geography 101" maxlength="80"/>
   </div>
   <div class="field">
-    <label for="quiz-desc">Description</label>
-    <textarea id="quiz-desc" rows="2" placeholder="A short description…" maxlength="200"></textarea>
+    <label>Description</label>
+    <textarea id="quiz-desc" rows="2" placeholder="Short description…" maxlength="200"></textarea>
   </div>
 
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
+  <div class="section-row">
     <span class="section-label">Questions</span>
     <span class="q-counter" id="q-counter">0 questions</span>
   </div>
 
   <div id="q-list"></div>
-  <button class="add-q-btn" onclick="addQuestion()">+ Add question</button>
 
-  <!-- Share box appear after publish -->
+  <button class="add-q-btn" onclick="addQuestion('mcq')">+ Add question</button>
+
+  <div class="error-msg" id="error-msg"></div>
+
   <div class="share-box" id="share-box">
     <div class="share-title">✅ Quiz published! Share this link:</div>
     <div class="share-link-wrap">
@@ -115,19 +136,17 @@
   import { getAuth, onAuthStateChanged }      from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
   import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-  const firebaseConfig = {
+  const app  = initializeApp({
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
     authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
     projectId:         "online-quiz-and-exam-platform",
     storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
     messagingSenderId: "1090034589767",
     appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
-  };
+  });
 
-  const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db   = getFirestore(app);
-
   let currentUser = null;
 
   onAuthStateChanged(auth, user => {
@@ -135,134 +154,213 @@
     currentUser = user;
   });
 
-  let qCount = 0;
-
-  window.addQuestion = function() {
-    qCount++;
-    updateCounter();
-    const list = document.getElementById('q-list');
-    const idx  = qCount;
-    const card = document.createElement('div');
-    card.className = 'q-card';
-    card.id = 'q-' + idx;
-    card.innerHTML = `
-      <div class="q-card-header">
-        <span class="q-badge">QUESTION ${idx}</span>
-        <button class="remove-btn" onclick="removeQuestion(${idx})">&#215;</button>
-      </div>
-      <input type="text" placeholder="Write your question here…" class="q-text">
-      <div class="options-grid">
-        <div class="option-input-wrap"><span class="option-letter">A</span><input type="text" placeholder="Option A" class="opt-a" oninput="syncOptions(${idx})"></div>
-        <div class="option-input-wrap"><span class="option-letter">B</span><input type="text" placeholder="Option B" class="opt-b" oninput="syncOptions(${idx})"></div>
-        <div class="option-input-wrap"><span class="option-letter">C</span><input type="text" placeholder="Option C" class="opt-c" oninput="syncOptions(${idx})"></div>
-        <div class="option-input-wrap"><span class="option-letter">D</span><input type="text" placeholder="Option D (optional)" class="opt-d" oninput="syncOptions(${idx})"></div>
-      </div>
-      <div class="correct-row">
-        <label>Correct answer:</label>
-        <select class="correct-sel">
-          <option value="">— select —</option>
-          <option value="A">A</option><option value="B">B</option>
-          <option value="C">C</option><option value="D">D</option>
-        </select>
-      </div>`;
-    list.appendChild(card);
-  };
-
-  window.removeQuestion = function(idx) {
-    const card = document.getElementById('q-' + idx);
-    if (card) { card.style.opacity='0'; card.style.transition='opacity 0.2s'; setTimeout(()=>{ card.remove(); renumber(); updateCounter(); },200); }
-  };
-
-  window.syncOptions = function(idx) {
-    const card = document.getElementById('q-' + idx);
-    if (!card) return;
-    const sel = card.querySelector('.correct-sel');
-    const cur = sel.value;
-    while (sel.options.length > 1) sel.remove(1);
-    ['opt-a','opt-b','opt-c','opt-d'].forEach((cls,i) => {
-      const val = card.querySelector('.'+cls).value.trim();
-      const lbl = ['A','B','C','D'][i];
-      if (val) { const o=document.createElement('option'); o.value=lbl; o.textContent=lbl+' — '+val; if(cur===lbl)o.selected=true; sel.appendChild(o); }
-    });
-  };
-
-  function renumber() {
-    document.querySelectorAll('.q-card').forEach((c,i) => {
-      const b=c.querySelector('.q-badge'); if(b) b.textContent='QUESTION '+(i+1);
-    });
-  }
+  // ── Question counter ──────────────────────────────────────
+  let qId = 0;
 
   function updateCounter() {
     const n = document.querySelectorAll('.q-card').length;
-    document.getElementById('q-counter').textContent = n+' question'+(n!==1?'s':'');
+    document.getElementById('q-counter').textContent = n + ' question' + (n !== 1 ? 's' : '');
   }
 
-  function showToast(msg) {
-    const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'),2800);
-  }
+  // ── Add Question ──────────────────────────────────────────
+  window.addQuestion = function(type = 'mcq') {
+    qId++;
+    const id   = qId;
+    const list = document.getElementById('q-list');
+    const n    = list.querySelectorAll('.q-card').length + 1;
 
-  window.copyLink = function() {
-    const input = document.getElementById('share-link');
-    navigator.clipboard.writeText(input.value).then(()=>showToast('Link copied! ✅'));
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'qcard-' + id;
+
+    card.innerHTML = `
+      <div class="q-card-header">
+        <span class="q-badge" id="qbadge-${id}">QUESTION ${n}</span>
+        <button class="remove-btn" onclick="removeQ(${id})">&#215;</button>
+      </div>
+
+      <!-- Type toggle -->
+      <div class="type-toggle">
+        <button class="type-btn active" id="mcq-btn-${id}"  onclick="setType(${id},'mcq')">Multiple Choice</button>
+        <button class="type-btn"        id="tf-btn-${id}"   onclick="setType(${id},'tf')">True / False</button>
+      </div>
+
+      <!-- Question text -->
+      <input type="text" placeholder="Write your question here…" class="q-text" style="margin-bottom:0.75rem"/>
+
+      <!-- MCQ options -->
+      <div id="mcq-opts-${id}">
+        <div class="options-grid">
+          <div class="option-wrap"><span class="option-letter">A</span><input type="text" class="opt opt-A" placeholder="Option A"/></div>
+          <div class="option-wrap"><span class="option-letter">B</span><input type="text" class="opt opt-B" placeholder="Option B"/></div>
+          <div class="option-wrap"><span class="option-letter">C</span><input type="text" class="opt opt-C" placeholder="Option C (optional)"/></div>
+          <div class="option-wrap"><span class="option-letter">D</span><input type="text" class="opt opt-D" placeholder="Option D (optional)"/></div>
+        </div>
+        <div class="correct-row">
+          <label>Correct answer:</label>
+          <select class="mcq-correct">
+            <option value="">— select —</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- True/False options -->
+      <div id="tf-opts-${id}" style="display:none">
+        <div class="tf-row">
+          <button class="tf-btn" id="tf-true-${id}"  onclick="selectTF(${id},'True')">✅ True</button>
+          <button class="tf-btn" id="tf-false-${id}" onclick="selectTF(${id},'False')">❌ False</button>
+        </div>
+        <input type="hidden" class="tf-correct" value=""/>
+      </div>`;
+
+    list.appendChild(card);
+    updateCounter();
+    renumber();
   };
 
-  window.publish = async function() {
-    const title = document.getElementById('quiz-title').value.trim();
-    if (!title) { showToast('Please add a quiz title'); return; }
+  // ── Remove Question ───────────────────────────────────────
+  window.removeQ = function(id) {
+    const card = document.getElementById('qcard-' + id);
+    if (!card) return;
+    card.style.opacity = '0';
+    card.style.transition = 'opacity 0.2s';
+    setTimeout(() => { card.remove(); updateCounter(); renumber(); }, 200);
+  };
 
-    const cards = document.querySelectorAll('.q-card');
-    if (cards.length === 0) { showToast('Add at least one question'); return; }
-
-    let valid = true;
-    const questions = [];
-    cards.forEach(card => {
-      const q   = card.querySelector('.q-text').value.trim();
-      const a   = card.querySelector('.opt-a').value.trim();
-      const b   = card.querySelector('.opt-b').value.trim();
-      const ans = card.querySelector('.correct-sel').value;
-      if (!q || !a || !b || !ans) { valid=false; return; }
-      questions.push({
-        text:    q,
-        options: { A:a, B:b, C:card.querySelector('.opt-c').value.trim(), D:card.querySelector('.opt-d').value.trim() },
-        correct: ans
-      });
+  function renumber() {
+    document.querySelectorAll('.q-card').forEach((c, i) => {
+      const b = c.querySelector('.q-badge');
+      if (b) b.textContent = 'QUESTION ' + (i + 1);
     });
+  }
 
-    if (!valid) { showToast('Fill in all required fields'); return; }
+  // ── Switch type MCQ ↔ TF ─────────────────────────────────
+  window.setType = function(id, type) {
+    const mcqOpts = document.getElementById('mcq-opts-' + id);
+    const tfOpts  = document.getElementById('tf-opts-'  + id);
+    const mcqBtn  = document.getElementById('mcq-btn-'  + id);
+    const tfBtn   = document.getElementById('tf-btn-'   + id);
 
-    const btn = document.getElementById('publish-btn');
-    btn.disabled = true;
-    btn.textContent = 'Publishing...';
-
-    try {
-      // save in Firestore
-      const docRef = await addDoc(collection(db, 'quizzes'), {
-        title,
-        description: document.getElementById('quiz-desc').value.trim(),
-        questions,
-        createdBy:    currentUser.uid,
-        creatorName:  currentUser.displayName || 'Anonymous',
-        createdAt:    serverTimestamp(),
-        questionCount: questions.length
-      });
-
-      // show link
-      const link = `${window.location.origin}/quiz/${docRef.id}`;
-      document.getElementById('share-link').value = link;
-      document.getElementById('share-box').classList.add('show');
-      btn.textContent = 'Published!';
-      showToast('Quiz published successfully!');
-
-    } catch (err) {
-      btn.disabled = false;
-      btn.textContent = 'Publish quiz';
-      showToast('Failed to publish: ' + err.message);
+    if (type === 'mcq') {
+      mcqOpts.style.display = '';
+      tfOpts.style.display  = 'none';
+      mcqBtn.classList.add('active');
+      tfBtn.classList.remove('active');
+    } else {
+      mcqOpts.style.display = 'none';
+      tfOpts.style.display  = '';
+      tfBtn.classList.add('active');
+      mcqBtn.classList.remove('active');
     }
   };
 
-  // start with one question
-  window.addQuestion();
+  // ── True/False select ─────────────────────────────────────
+  window.selectTF = function(id, val) {
+    const trueBtn  = document.getElementById('tf-true-'  + id);
+    const falseBtn = document.getElementById('tf-false-' + id);
+    const hidden   = document.querySelector('#qcard-' + id + ' .tf-correct');
+
+    trueBtn.className  = 'tf-btn' + (val === 'True'  ? ' selected-true'  : '');
+    falseBtn.className = 'tf-btn' + (val === 'False' ? ' selected-false' : '');
+    hidden.value = val;
+  };
+
+  // ── Toast ─────────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }
+
+  // ── Copy link ─────────────────────────────────────────────
+  window.copyLink = function() {
+    navigator.clipboard.writeText(document.getElementById('share-link').value)
+      .then(() => showToast('Link copied! ✅'));
+  };
+
+  // ── Publish ───────────────────────────────────────────────
+  window.publish = async function() {
+    const title = document.getElementById('quiz-title').value.trim();
+    if (!title) { showError('Please add a quiz title'); return; }
+
+    const cards = document.querySelectorAll('.q-card');
+    if (cards.length === 0) { showError('Add at least one question'); return; }
+
+    const questions = [];
+    let valid = true;
+
+    cards.forEach(card => {
+      const text       = card.querySelector('.q-text').value.trim();
+      const essayEl    = card.querySelector('[id^="essay-opts-"]');
+      const tfEl       = card.querySelector('[id^="tf-opts-"]');
+      const essayVisible = essayEl && essayEl.style.display !== 'none';
+      const tfVisible    = tfEl    && tfEl.style.display    !== 'none';
+
+      if (!text) { valid = false; return; }
+
+      if (essayVisible) {
+        questions.push({ type: 'essay', text });
+      } else if (tfVisible) {
+        const ans = card.querySelector('.tf-correct').value;
+        if (!ans) { valid = false; return; }
+        questions.push({ type: 'tf', text, correct: ans });
+      } else {
+        const A   = card.querySelector('.opt-A').value.trim();
+        const B   = card.querySelector('.opt-B').value.trim();
+        const ans = card.querySelector('.mcq-correct').value;
+        if (!A || !B || !ans) { valid = false; return; }
+        questions.push({
+          type: 'mcq', text,
+          options: { A, B, C: card.querySelector('.opt-C').value.trim(), D: card.querySelector('.opt-D').value.trim() },
+          correct: ans
+        });
+      }
+    });
+
+    if (!valid) { showError('Please complete all questions and select correct answers'); return; }
+
+    const btn = document.getElementById('publish-btn');
+    btn.disabled    = true;
+    btn.textContent = 'Publishing…';
+
+    try {
+      const docRef = await addDoc(collection(db, 'quizzes'), {
+        title,
+        description:   document.getElementById('quiz-desc').value.trim(),
+        questions,
+        questionCount: questions.length,
+        createdBy:     currentUser.uid,
+        creatorName:   currentUser.displayName || currentUser.email,
+        createdAt:     serverTimestamp()
+      });
+
+      const link = `${window.location.origin}/quiz/${docRef.id}`;
+      document.getElementById('share-link').value = link;
+      document.getElementById('share-box').classList.add('show');
+      btn.textContent = 'Published ✅';
+      showToast('Quiz published!');
+
+    } catch (err) {
+      btn.disabled    = false;
+      btn.textContent = 'Publish quiz';
+      showError('Failed: ' + err.message);
+    }
+  };
+
+  // Start with one question
+  window.addQuestion('mcq');
 </script>
 </body>
 </html>
