@@ -96,7 +96,7 @@
   <div id="q-list"></div>
   <button class="add-q-btn" onclick="addQuestion()">+ Add question</button>
 
-  <!-- Share box بيظهر بعد publish -->
+  <!-- Share box appear after publish -->
   <div class="share-box" id="share-box">
     <div class="share-title">✅ Quiz published! Share this link:</div>
     <div class="share-link-wrap">
@@ -236,7 +236,7 @@
     btn.textContent = 'Publishing...';
 
     try {
-      // حفظ في Firestore
+      // save in Firestore
       const docRef = await addDoc(collection(db, 'quizzes'), {
         title,
         description: document.getElementById('quiz-desc').value.trim(),
@@ -261,7 +261,7 @@
     }
   };
 
-  // ابدأ بسؤال واحد
+  // start with one question
   window.addQuestion();
 </script>
 </body>
