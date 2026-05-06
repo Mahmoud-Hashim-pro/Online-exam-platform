@@ -1,374 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quizer — Search</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #ffffff;
-      --surface:   #f4f4f6;
-      --card:      #f4f4f6;
-      --card-hover:#eaeaef;
-      --border:    rgba(0,0,0,0.08);
-      --border-h:  rgba(0,0,0,0.18);
-      --text:      #111114;
-      --muted:     #666672;
-      --accent:    #5a4ee8;
-      --accent2:   #1aaa88;
-      --input-bg:  #f4f4f6;
-    }
-
+    :root { --bg:#ffffff; --surface:#f4f4f6; --card:#f4f4f6; --card-hover:#eaeaef; --border:rgba(0,0,0,0.08); --border-h:rgba(0,0,0,0.18); --text:#111114; --muted:#666672; --accent:#5a4ee8; --accent2:#1aaa88; }
     @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:        #1e1e22;
-        --surface:   #28282e;
-        --card:      #313138;
-        --card-hover:#3a3a44;
-        --border:    rgba(255,255,255,0.08);
-        --border-h:  rgba(255,255,255,0.18);
-        --text:      #e8e8ec;
-        --muted:     #8a8a98;
-        --accent:    #7c6ff7;
-        --accent2:   #4fcfae;
-        --input-bg:  #28282e;
-      }
+      :root { --bg:#1e1e22; --surface:#28282e; --card:#313138; --card-hover:#3a3a44; --border:rgba(255,255,255,0.08); --border-h:rgba(255,255,255,0.18); --text:#e8e8ec; --muted:#8a8a98; --accent:#7c6ff7; --accent2:#4fcfae; }
     }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-    }
-
-    /* ── Top Bar ── */
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 1.4rem 1.5rem 0;
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    .back-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.15s, border-color 0.15s;
-      flex-shrink: 0;
-    }
-    .back-btn:hover { background: var(--card-hover); border-color: var(--border-h); }
-    .back-btn svg {
-      width: 18px; height: 18px;
-      stroke: var(--text); fill: none;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-    }
-
-    .topbar-title {
-      font-family: 'Space Mono', monospace;
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ── Page ── */
-    .page {
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 1.4rem 1.5rem 3rem;
-    }
-
-    /* ── Search Box ── */
-    .search-wrap {
-      position: relative;
-      margin-bottom: 1.5rem;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 18px; height: 18px;
-      stroke: var(--muted); fill: none;
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-      pointer-events: none;
-    }
-
-    .search-input {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 0.85rem 1rem 0.85rem 2.8rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .search-input::placeholder { color: var(--muted); }
-    .search-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(90,78,232,0.12);
-    }
-
-    .search-btn {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none;
-      border-radius: 10px;
-      padding: 0.45rem 1rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #fff;
-      cursor: pointer;
-      transition: opacity 0.15s;
-    }
-    .search-btn:hover { opacity: 0.88; }
-
-    /* ── Section Title ── */
-    .section-title {
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    /* ── Results List ── */
-    .results-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .quiz-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1rem 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, transform 0.15s;
-      text-decoration: none;
-      color: inherit;
-      position: relative;
-      overflow: hidden;
-    }
-    .quiz-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--accent) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.18s;
-    }
-    .quiz-card:hover { background: var(--card-hover); border-color: var(--border-h); transform: translateY(-2px); }
-    .quiz-card:hover::before { opacity: 0.05; }
-    .quiz-card:active { transform: translateY(0); }
-
-    /* أيقونة */
-    .quiz-icon {
-      width: 42px; height: 42px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-size: 1.2rem;
-    }
-    .quiz-icon.purple { background: rgba(90,78,232,0.12); }
-    .quiz-icon.green  { background: rgba(26,170,136,0.12); }
-    .quiz-icon.amber  { background: rgba(242,196,111,0.12); }
-    .quiz-icon.red    { background: rgba(242,116,116,0.12); }
-    .quiz-icon.gray   { background: rgba(130,130,160,0.12); }
-
-    /* Info */
-    .quiz-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
-    .quiz-name {
-      font-size: 0.92rem; font-weight: 500;
-      margin-bottom: 3px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .quiz-meta { font-size: 0.72rem; color: var(--muted); }
-
-    /* Join Button */
-    .join-btn {
-      flex-shrink: 0;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none;
-      border-radius: 10px;
-      padding: 0.4rem 0.9rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #fff;
-      cursor: pointer;
-      transition: opacity 0.15s;
-      position: relative;
-      z-index: 1;
-    }
-    .join-btn:hover { opacity: 0.85; }
-
-    /* Badge */
-    .badge {
-      display: inline-block;
-      font-size: 0.62rem;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 20px;
-      margin-left: 6px;
-      vertical-align: middle;
-    }
-    .badge.live { background: rgba(242,116,116,0.15); color: #e85a5a; }
-    @media (prefers-color-scheme: dark) {
-      .badge.live { color: #f27474; }
-    }
-
-    /* ── Empty State ── */
-    .empty {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--muted);
-    }
-    .empty svg {
-      width: 48px; height: 48px;
-      stroke: var(--border-h); fill: none;
-      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
-      margin-bottom: 1rem;
-      display: block; margin-left: auto; margin-right: auto;
-    }
-    .empty-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
-    .empty-desc  { font-size: 0.8rem; }
-
-    /* ── Animations ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .search-wrap { animation: fadeUp 0.25s ease both; }
-    .quiz-card   { animation: fadeUp 0.3s ease both; }
-    .quiz-card:nth-child(1) { animation-delay: 0.05s; }
-    .quiz-card:nth-child(2) { animation-delay: 0.10s; }
-    .quiz-card:nth-child(3) { animation-delay: 0.15s; }
-    .quiz-card:nth-child(4) { animation-delay: 0.20s; }
-    .quiz-card:nth-child(5) { animation-delay: 0.25s; }
+    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+    .topbar { display:flex; align-items:center; gap:14px; padding:1.4rem 1.5rem 0; max-width:560px; margin:0 auto; }
+    .back-btn { width:36px; height:36px; border-radius:10px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:background 0.15s; flex-shrink:0; }
+    .back-btn:hover { background:var(--card-hover); }
+    .back-btn svg { width:18px; height:18px; stroke:var(--text); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .topbar-title { font-family:'Space Mono',monospace; font-size:1.15rem; font-weight:700; letter-spacing:-0.5px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .page { max-width:560px; margin:0 auto; padding:1.4rem 1.5rem 3rem; }
+    .search-wrap { position:relative; margin-bottom:1.5rem; }
+    .search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:18px; height:18px; stroke:var(--muted); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
+    .search-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:0.85rem 1rem 0.85rem 2.8rem; font-family:'DM Sans',sans-serif; font-size:0.95rem; color:var(--text); outline:none; transition:border-color 0.15s, box-shadow 0.15s; }
+    .search-input::placeholder { color:var(--muted); }
+    .search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(90,78,232,0.12); }
+    .search-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:10px; padding:0.45rem 1rem; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:600; color:#fff; cursor:pointer; }
+    .section-title { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+    .results-list { display:flex; flex-direction:column; gap:10px; }
+    .quiz-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1rem 1.1rem; display:flex; align-items:center; gap:14px; text-decoration:none; color:inherit; transition:background 0.15s, border-color 0.15s, transform 0.15s; }
+    .quiz-card:hover { background:var(--card-hover); border-color:var(--border-h); transform:translateY(-2px); }
+    .quiz-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:rgba(90,78,232,0.12); font-size:1.2rem; }
+    .quiz-info { flex:1; min-width:0; }
+    .quiz-name { font-size:0.92rem; font-weight:500; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .quiz-meta { font-size:0.72rem; color:var(--muted); }
+    .join-btn { flex-shrink:0; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:10px; padding:0.4rem 0.9rem; font-family:'DM Sans',sans-serif; font-size:0.78rem; font-weight:600; color:#fff; cursor:pointer; }
+    .empty { text-align:center; padding:3rem 1rem; color:var(--muted); }
+    .empty svg { width:48px; height:48px; stroke:var(--border-h); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; margin:0 auto 1rem; display:block; }
+    .empty-title { font-size:0.95rem; font-weight:500; margin-bottom:4px; color:var(--text); }
+    .empty-desc  { font-size:0.8rem; }
+    .spinner { text-align:center; padding:2rem; color:var(--muted); font-size:0.85rem; display:none; }
   </style>
 </head>
 <body>
 
-  <!-- Top Bar -->
-  <div class="topbar">
-    <a href="/" class="back-btn">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </a>
-    <span class="topbar-title">Search</span>
+<div class="topbar">
+  <a href="/home" class="back-btn">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <span class="topbar-title">Search</span>
+</div>
+
+<div class="page">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" class="search-input" id="search-input" placeholder="Search for a quiz by name…" autocomplete="off"/>
+    <button class="search-btn" onclick="doSearch()">Search</button>
   </div>
 
-  <div class="page">
-
-    <!-- Search Input -->
-    <div class="search-wrap">
-      <svg class="search-icon" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <input
-        type="text"
-        class="search-input"
-        id="search-input"
-        placeholder="Search for a quiz or code..."
-        autocomplete="off"
-      />
-      <button class="search-btn" onclick="doSearch()">Search</button>
-    </div>
-
-    <!-- Section Label -->
-    <div class="section-title" id="section-label">Available Quizzes</div>
-
-    <!-- Results -->
-    <div class="results-list" id="results-list">
-      <!-- الكروت هتيجي من الـ server -->
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty" id="empty-state">
-      <svg viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
-      <div class="empty-title">No quizzes found</div>
-      <div class="empty-desc">Try a different name or join code</div>
-    </div>
-
+  <div class="section-title" id="section-label">All Quizzes</div>
+  <div class="spinner" id="spinner">Loading...</div>
+  <div class="results-list" id="results-list"></div>
+  <div class="empty" id="empty-state" style="display:none;">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <div class="empty-title">No quizzes found</div>
+    <div class="empty-desc">Try a different name</div>
   </div>
-
-  <script>
-    const list  = document.getElementById('results-list');
-    const empty = document.getElementById('empty-state');
-
-    // بيتحقق لو في نتايج ولا لأ ويظهر الـ empty state
-    function checkEmpty() {
-      empty.style.display = list.children.length === 0 ? 'block' : 'none';
-    }
-
-    // دي الفنكشن اللي بتتبعت للـ server لما المستخدم يدوس Search
-    function doSearch() {
-      const query = document.getElementById('search-input').value.trim();
-      if (!query) return;
-
-      // هنا بتبعت الـ query للـ server
-      // مثال:
-      // fetch(`/search?q=${encodeURIComponent(query)}`)
-      //   .then(res => res.json())
-      //   .then(data => renderResults(data));
-
-      document.getElementById('section-label').textContent = `Results for "${query}"`;
-    }
-
-    // Enter بيشغل الـ search
-    document.getElementById('search-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') doSearch();
-    });
-
-    checkEmpty();
-  </script>
+</div>
 
 <script type="module">
-  import { initializeApp }        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { initializeApp }               from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  const _app  = initializeApp({
+  import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+  const firebaseConfig = {
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
     authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
     projectId:         "online-quiz-and-exam-platform",
     storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
     messagingSenderId: "1090034589767",
     appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  onAuthStateChanged(auth, user => {
+    if (!user) { window.location.href = '/log'; return; }
+    loadQuizzes();
   });
-  onAuthStateChanged(getAuth(_app), user => {
-    if (!user) window.location.href = '/log';
+
+  let allQuizzes = [];
+
+  async function loadQuizzes() {
+    document.getElementById('spinner').style.display = 'block';
+    try {
+      const q = query(collection(db, 'quizzes'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      allQuizzes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderResults(allQuizzes);
+    } catch (err) {
+      console.error(err);
+    }
+    document.getElementById('spinner').style.display = 'none';
+  }
+
+  function renderResults(quizzes) {
+    const list  = document.getElementById('results-list');
+    const empty = document.getElementById('empty-state');
+    list.innerHTML = '';
+
+    if (quizzes.length === 0) { empty.style.display='block'; return; }
+    empty.style.display = 'none';
+
+    const emojis = ['📚','🔬','🌍','🧠','🎓','💡','🏆','⚡'];
+
+    quizzes.forEach((quiz, i) => {
+      const card = document.createElement('a');
+      card.className = 'quiz-card';
+      card.href = `/quiz/${quiz.id}`;
+      card.innerHTML = `
+        <div class="quiz-icon">${emojis[i % emojis.length]}</div>
+        <div class="quiz-info">
+          <div class="quiz-name">${quiz.title}</div>
+          <div class="quiz-meta">${quiz.questionCount || quiz.questions?.length || 0} questions · by ${quiz.creatorName || 'Unknown'}</div>
+        </div>
+        <button class="join-btn" onclick="event.preventDefault(); window.location.href='/quiz/${quiz.id}'">Join</button>`;
+      list.appendChild(card);
+    });
+  }
+
+  window.doSearch = function() {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    document.getElementById('section-label').textContent = q ? `Results for "${q}"` : 'All Quizzes';
+    if (!q) { renderResults(allQuizzes); return; }
+    const filtered = allQuizzes.filter(quiz => quiz.title.toLowerCase().includes(q) || (quiz.description||'').toLowerCase().includes(q));
+    renderResults(filtered);
+  };
+
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.doSearch();
   });
 </script>
 </body>
