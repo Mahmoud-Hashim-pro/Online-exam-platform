@@ -251,12 +251,12 @@
   });
   const _auth = getAuth(_app);
 
-  // لو مش logged in روح على login
+  // If you're not logged in, go to login.
   onAuthStateChanged(_auth, user => {
     if (!user) window.location.href = '/log';
   });
 
-  // Sign out — بيعمل Firebase signOut الأول
+  // Sign out — Firebase performs the first signOut 
   window.handleSignOut = async function() {
     await signOut(_auth);
     window.location.href = '/';
