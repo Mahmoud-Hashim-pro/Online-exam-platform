@@ -1,39 +1,129 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            body {
-                position: fixed;
-                display: flex;
-                width: 100%;
-                height: 100vh;
-                justify-content: center;
-                align-items: center;
-            }
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About – <%= pageTitle %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --card: #f4f4f6; --card-hover: #eaeaef;
+      --border: rgba(0,0,0,0.08); --border-h: rgba(0,0,0,0.18);
+      --text: #111114; --muted: #666672; --accent: #5a4ee8; --accent2: #1aaa88;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1e1e22; --card: #313138; --card-hover: #3a3a44;
+        --border: rgba(255,255,255,0.08); --border-h: rgba(255,255,255,0.18);
+        --text: #e8e8ec; --muted: #8a8a98; --accent: #7c6ff7; --accent2: #4fcfae;
+      }
+    }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh; padding: 2rem 1.5rem;
+    }
+    .page { width: 100%; max-width: 480px; margin: 0 auto; animation: fadeUp 0.3s ease both; }
 
-            .header {
-                display: flex;
-                flex-direction: column;                
-            }
+    /* topbar */
+    .topbar {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .back {
+      display: flex; align-items: center; gap: 6px;
+      text-decoration: none; color: var(--muted);
+      font-size: 0.85rem; font-weight: 500;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.5rem 0.9rem;
+      transition: background 0.15s;
+    }
+    .back:hover { background: var(--card-hover); }
+    .back svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .topbar-title { font-family: 'Space Mono', monospace; font-size: 1rem; font-weight: 700; }
 
-            p {
-                max-width: 70ch;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <h1>About</h1>
-            <div>
-                <p>
-                    This web app was made to help people post quizes rapidly,
-                    and let other students attend, participate, and view their grades.
-                </p>
-                <p>
-                    Web app was made with love by students at <i>Cairo University</i>.
-                </p>
-                <a href="/">Go to main</a>
-            </div>
-        </div>
-    </body>
+    /* sections */
+    .section {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.2rem 1.4rem;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 0.78rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 0.7rem;
+    }
+    .section p { font-size: 0.9rem; line-height: 1.6; color: var(--text); }
+    .section p + p { margin-top: 0.5rem; }
+
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .feature-list li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.88rem;
+    }
+    .feature-list li::before {
+      content: '';
+      width: 7px; height: 7px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 600;
+      background: rgba(90,78,232,0.12); color: var(--accent);
+    }
+
+    /* logo small */
+    .logo-sm {
+      font-family: 'Space Mono', monospace; font-size: 1rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <a href="/" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+    <div class="topbar-title">About</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Introduction</div>
+    <p>This web app was made to help people post quizzes rapidly, and let other students attend, participate, and view their grades.</p>
+    <p>Web app was made with love by students at <em>Cairo University</em>.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Features</div>
+    <ul class="feature-list">
+      <li>Create and publish quizzes instantly</li>
+      <li>Search and join quizzes</li>
+      <li>View your grades and history</li>
+      <li>Secure login with Firebase</li>
+      <li>Google Sign-in support</li>
+      <li>Dark & Light mode</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">App Info</div>
+    <p>App: <span class="logo-sm">Quizer</span></p>
+    <p style="margin-top:6px">Version: <span class="badge">v1.0.0</span></p>
+  </div>
+
+</div>
+</body>
 </html>
