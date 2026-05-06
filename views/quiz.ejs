@@ -263,9 +263,9 @@
     document.getElementById('result-score').textContent =
       gradable > 0 ? `${score}/${gradable}` : '—';
 
-    let msg = pct >= 80 ? '🏆 Excellent work!' :
-              pct >= 60 ? '👍 Good job!' :
-              pct >= 40 ? '📚 Keep practicing!' : '💪 Try again!';
+    let msg = pct >= 80 ? 'Excellent work!' :
+              pct >= 60 ? 'Good job!' :
+              pct >= 40 ? 'Keep practicing!' : 'Try again!';
 
     if (essayCount > 0) {
       msg += `
