@@ -1,381 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Quizer â€” Quiz</title>
-        <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-        <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quizer — Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#ffffff; --card:#f4f4f6; --card-hover:#eaeaef; --border:rgba(0,0,0,0.08); --text:#111114; --muted:#666672; --accent:#5a4ee8; --accent2:#1aaa88; --danger:#e05252; --green:#1aaa88; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#1e1e22; --card:#313138; --card-hover:#3a3a44; --border:rgba(255,255,255,0.08); --text:#e8e8ec; --muted:#8a8a98; --accent:#7c6ff7; --accent2:#4fcfae; --danger:#f27474; --green:#4fcfae; }
+    }
+    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; display:flex; justify-content:center; padding:2rem 1rem; }
+    .page { width:100%; max-width:540px; }
+    .header { display:flex; align-items:center; gap:12px; margin-bottom:1.5rem; }
+    .back-btn { width:36px; height:36px; border-radius:10px; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; text-decoration:none; flex-shrink:0; }
+    .back-btn svg { width:18px; height:18px; stroke:var(--text); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .quiz-title { font-size:1.1rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-        :root {
-            --bg:        #ffffff;
-            --card:      #f4f4f6;
-            --card-hover:#eaeaef;
-            --border:    rgba(0,0,0,0.08);
-            --border-h:  rgba(0,0,0,0.18);
-            --text:      #111114;
-            --muted:     #666672;
-            --accent:    #5a4ee8;
-            --accent2:   #1aaa88;
-        }
+    /* Progress */
+    .progress-wrap { margin-bottom:1.5rem; }
+    .progress-info { display:flex; justify-content:space-between; font-size:0.78rem; color:var(--muted); margin-bottom:6px; }
+    .progress-bar { height:6px; background:var(--card); border-radius:99px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:99px; transition:width 0.3s ease; }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg:        #1e1e22;
-                --card:      #313138;
-                --card-hover:#3a3a44;
-                --border:    rgba(255,255,255,0.08);
-                --border-h:  rgba(255,255,255,0.18);
-                --text:      #e8e8ec;
-                --muted:     #8a8a98;
-                --accent:    #7c6ff7;
-                --accent2:   #4fcfae;
-            }
-        }
+    /* Question card */
+    .q-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; margin-bottom:1rem; }
+    .q-number { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); margin-bottom:0.6rem; }
+    .q-text { font-size:1rem; font-weight:500; line-height:1.5; }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* Options */
+    .options { display:flex; flex-direction:column; gap:10px; margin-bottom:1.5rem; }
+    .option-btn {
+      display:flex; align-items:center; gap:12px;
+      background:var(--card); border:1.5px solid var(--border);
+      border-radius:12px; padding:0.85rem 1rem;
+      cursor:pointer; text-align:left; font-family:'DM Sans',sans-serif;
+      font-size:0.9rem; color:var(--text);
+      transition:background 0.15s, border-color 0.15s;
+    }
+    .option-btn:hover { background:var(--card-hover); border-color:var(--accent); }
+    .option-btn.selected { border-color:var(--accent); background:rgba(90,78,232,0.08); }
+    .option-btn.correct  { border-color:var(--green);  background:rgba(26,170,136,0.1); }
+    .option-btn.wrong    { border-color:var(--danger);  background:rgba(224,82,82,0.08); }
+    .option-letter { width:28px; height:28px; border-radius:8px; background:rgba(90,78,232,0.12); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:var(--accent); flex-shrink:0; }
 
-        .page-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding-top: 1.4rem;
-            padding-right: 1.5rem;
-            margin: 0 auto;
-        }
+    /* Nav */
+    .nav { display:flex; gap:10px; }
+    .nav-btn { flex:1; padding:0.85rem; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:500; cursor:pointer; transition:background 0.15s; }
+    .nav-btn:hover { background:var(--card-hover); }
+    .nav-btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:#fff; font-weight:600; }
+    .nav-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
-        .back-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-            text-decoration: none;
-            flex-shrink: 0;
-        }
+    /* Result */
+    .result { display:none; text-align:center; padding:2rem 1rem; }
+    .result.show { display:block; }
+    .result-score { font-family:'Space Mono',monospace; font-size:3.5rem; font-weight:700; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .result-label { font-size:1rem; font-weight:500; margin:0.4rem 0 1.5rem; color:var(--muted); }
+    .result-msg { font-size:1.1rem; font-weight:600; margin-bottom:1.5rem; }
+    .result-btn { padding:0.85rem 2rem; border-radius:12px; border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:600; cursor:pointer; }
 
-        .back-btn:hover {
-            background: var(--card-hover);
-            border-color: var(--border-h);
-        }
+    /* Loading */
+    .loading { text-align:center; padding:4rem 1rem; color:var(--muted); font-size:0.9rem; }
+    .loading svg { width:40px; height:40px; stroke:var(--muted); fill:none; stroke-width:1.5; margin:0 auto 1rem; display:block; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="page">
 
-        .back-btn svg {
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke: var(--text);
-            width: 18px;
-            height: 18px;
-        }
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+    Loading quiz...
+  </div>
 
-        .topbar-title {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.15rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            background-clip: text;
-        }
+  <!-- Quiz UI -->
+  <div id="quiz-ui" style="display:none;">
+    <div class="header">
+      <a href="/search" class="back-btn">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <div class="quiz-title" id="quiz-title-el">Quiz</div>
+    </div>
 
-        .quiz-header {
-            border-radius: 8px;
-            margin-top: 2rem;
-        }
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progress-text">Question 1 of 1</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
 
-        .urgent {
-            color: #ff0000;
-            padding: 4px;
-            font-size: 1.2rem;
-        }
+    <div class="q-card">
+      <div class="q-number" id="q-number">QUESTION 1</div>
+      <div class="q-text" id="q-text"></div>
+    </div>
 
-        .horizontal {
-            margin-top: 2rem;
-            width: 100%;
-            height: 2px;
-            background-color: var(--border);
-        }
+    <div class="options" id="options"></div>
 
-        .stat-wrapper {
+    <div class="nav">
+      <button class="nav-btn" id="prev-btn" onclick="prevQ()">← Previous</button>
+      <button class="nav-btn primary" id="next-btn" onclick="nextQ()">Next →</button>
+    </div>
+  </div>
 
-            /* TBD ... Make the position of this element less hard coded
-                and more elgant */
-            position: fixed;
-            top: 10%;
-            left: 75%;
+  <!-- Result -->
+  <div class="result" id="result">
+    <div class="result-score" id="result-score">0/0</div>
+    <div class="result-label">Your Score</div>
+    <div class="result-msg" id="result-msg"></div>
+    <button class="result-btn" onclick="window.location.href='/history'">View History</button>
+  </div>
 
-            background-color: var(--card);
-            border-radius: 10px;
-            padding: 1.5rem;
-            width: 15em;
+</div>
 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .stat-wrapper svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--text);
-            stroke-width: 2px;
-        }
-
-        .stat-wrapper label {
-            color: var(--muted);
-            text-align: center;
-        }
-
-        .submit {
-            height: 2rem;
-            background-color: var(--accent);
-            color: var(--text);
-            border-radius: 4px;
-            border-color: 1px solid var(--border);
-            transition: background 0.15s, border-color 0.15s;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .submit:hover {
-            background-color: var(--accent2);
-            border-color: 1px solid var(--border-h);
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .question {
-            margin-top: 2rem;
-        }
-
-        .question-card {
-            background-color: var(--card);
-            border-radius: 10px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            width: 45rem;
-        }
-
-        .question-answers-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .answer {
-            background-color: var(--bg);
-            padding: 0.5rem;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            transition: background 0.15s, border-color 0.15s;
-            cursor: pointer;
-        }
-
-        .answer label {
-            padding: 0 0.5rem 0 0.5rem;
-            color: var(--muted);
-            cursor: inherit;
-        }
-
-        .answer:hover {
-            background-color: var(--card-hover);
-            border-color: var(--accent);
-        }
-
-        .end-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 4.5rem;
-            gap: 1rem;
-        }
-
-        .end-section svg {
-            width: 48px;
-            height: 48px;
-            stroke-width: 2px;
-            stroke: var(--border-h);
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .end-section p {
-            color: var(--muted);
-            font-style: italic;
-        }
-
-        </style>
-    </head>
-    <body>
-        <div class="stat-wrapper">
-            <div class="stat-header">
-                <svg class=stat-icon" viewBox="0 -960 960 960"><path d="M640-160v-280h160v280H640Zm-240 0v-640h160v640H400Zm-240 0v-440h160v440H160Z"/></svg>
-                <!-- TBD ... Update this label using Javascript -->
-                <label id="stat-solved">0/10 solved</label>
-            </div>
-            <label id="quiz-time">00h 00:00</label>
-            <!-- <button id="submit-quiz">Submit</button> -->
-            <div class="submit">Submit</div>
-        </div>
-        <div id="quiz-wrapper">
-            <div class="page-header">
-                <a href="" class="back-btn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></a>
-                <span class="topbar-title">Quiz</span>
-            </div>
-            <div class="quiz-header">
-                <h2>Dummpy Quiz</h2>
-                <p>This is a dummpy quiz. Take your time answring!</p>
-                <div class="horizontal"></div>
-            </div>
-            <div id="questions-wrapper">
-                <!-- Questions are placed here using Javascript -->
-            </div>
-        </div>
-        <div class="end-section">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <p>End of questions. Best of Wishes <3!</p>
-        </div>
-    <script type="module">
-  import { initializeApp }        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+<script type="module">
+  import { initializeApp }               from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  const _app  = initializeApp({
+  import { getFirestore, doc, getDoc }   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+  const firebaseConfig = {
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
     authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
     projectId:         "online-quiz-and-exam-platform",
     storageBucket:     "online-quiz-and-exam-platform.firebasestorage.app",
     messagingSenderId: "1090034589767",
     appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // جيب الـ quiz ID من الـ URL
+  const quizId = window.location.pathname.split('/').pop();
+
+  let quiz      = null;
+  let current   = 0;
+  let answers   = {};
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { window.location.href = '/log'; return; }
+    await loadQuiz();
   });
-  onAuthStateChanged(getAuth(_app), user => {
-    if (!user) window.location.href = '/log';
-  });
+
+  async function loadQuiz() {
+    try {
+      const snap = await getDoc(doc(db, 'quizzes', quizId));
+      if (!snap.exists()) { document.getElementById('loading').textContent = 'Quiz not found!'; return; }
+      quiz = { id: snap.id, ...snap.data() };
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('quiz-ui').style.display = 'block';
+      document.getElementById('quiz-title-el').textContent = quiz.title;
+      showQuestion(0);
+    } catch (err) {
+      document.getElementById('loading').textContent = 'Error loading quiz: ' + err.message;
+    }
+  }
+
+  function showQuestion(idx) {
+    const q   = quiz.questions[idx];
+    const tot = quiz.questions.length;
+    current   = idx;
+
+    // Progress
+    const pct = Math.round((idx / tot) * 100);
+    document.getElementById('progress-text').textContent = `Question ${idx+1} of ${tot}`;
+    document.getElementById('progress-pct').textContent  = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('q-number').textContent = `QUESTION ${idx+1}`;
+    document.getElementById('q-text').textContent   = q.text;
+
+    // Options
+    const optDiv = document.getElementById('options');
+    optDiv.innerHTML = '';
+    const letters = ['A','B','C','D'];
+    letters.forEach(l => {
+      if (!q.options[l]) return;
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      if (answers[idx] === l) btn.classList.add('selected');
+      btn.innerHTML = `<span class="option-letter">${l}</span>${q.options[l]}`;
+      btn.onclick = () => selectAnswer(idx, l);
+      optDiv.appendChild(btn);
+    });
+
+    // Nav buttons
+    document.getElementById('prev-btn').disabled = idx === 0;
+    document.getElementById('next-btn').textContent = idx === tot-1 ? 'Submit ✅' : 'Next →';
+  }
+
+  function selectAnswer(idx, letter) {
+    answers[idx] = letter;
+    document.querySelectorAll('.option-btn').forEach((btn, i) => {
+      const l = ['A','B','C','D'].filter(x => quiz.questions[idx].options[x])[i];
+      btn.classList.toggle('selected', l === letter);
+    });
+  }
+
+  window.prevQ = function() { if (current > 0) showQuestion(current - 1); };
+
+  window.nextQ = function() {
+    if (current < quiz.questions.length - 1) {
+      showQuestion(current + 1);
+    } else {
+      showResult();
+    }
+  };
+
+  function showResult() {
+    let score = 0;
+    quiz.questions.forEach((q, i) => { if (answers[i] === q.correct) score++; });
+    const tot = quiz.questions.length;
+    const pct = Math.round((score/tot)*100);
+
+    document.getElementById('quiz-ui').style.display  = 'none';
+    document.getElementById('result').classList.add('show');
+    document.getElementById('result-score').textContent = `${score}/${tot}`;
+    document.getElementById('result-msg').textContent   =
+      pct >= 80 ? '🏆 Excellent work!' :
+      pct >= 60 ? '👍 Good job!' :
+      pct >= 40 ? '📚 Keep practicing!' : '💪 Try again!';
+  }
 </script>
 </body>
-    <script>
-
-        var questionCounter = 0;
-
-        function addQuestion(qinfo) {
-
-            questionCounter++;
-
-            // question label
-            let qlabel = document.createElement('label');
-
-            if(qinfo.urgent) {
-                // question label astric
-                var qlspan = document.createElement('span');
-                qlspan.innerText = '*';
-                qlspan.className = "urgent";
-                qlabel.appendChild(qlspan);
-            }
-
-            qlabel.innerHTML += `Question ${questionCounter}`;
-
-            // question body header
-            let qbheader = document.createElement('div');
-            qbheader.innerHTML = `<p>${qinfo.question}</p>`;
-
-            // question body answers
-            let qbanswers = document.createElement('div');
-            qbanswers.className = "question-answers-wrapper"
-
-            for(let i = 0; i < 4; i++) {
-
-                // answer label
-                var alabel = document.createElement('label');
-                alabel.innerText = String.fromCharCode('A'.charCodeAt(0) + i);
-
-                var answer = document.createElement('label');
-                answer.innerText = qinfo.answers[i];
-
-                // answer wrapper
-                var awrapper = document.createElement('div');
-                awrapper.className = "answer";
-                awrapper.appendChild(alabel);
-                awrapper.appendChild(answer);
-
-                qbanswers.appendChild(awrapper);
-            }
-
-            // question body
-            let qbody = document.createElement('div');
-            qbody.className = "question-card";
-            qbody.appendChild(qbheader);
-            qbody.appendChild(qbanswers);
-
-            // question
-            let q = document.createElement('div');
-            q.id = `question-${questionCounter}`
-            q.className = "question"
-            q.appendChild(qlabel);
-            q.appendChild(qbody);
-
-            document.querySelector('#questions-wrapper').appendChild(q);
-        }
-
-        // TBD ... Track selected answers
-        // TBD ... Unchecking questions by double clicking the selected answer.
-
-        /* add dummy question */
-        addQuestion({
-            urgent: 1,
-            question: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            answers: [
-                "Contrary to popular belief",
-                "It is a long established fact",
-                "There are many variations of passages",
-                "The first line of Lorem Ipsum"
-            ]
-        })
-
-        addQuestion({
-            urgent: 0,
-            question: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            answers: [
-                "Contrary to popular belief",
-                "It is a long established fact",
-                "There are many variations of passages",
-                "The first line of Lorem Ipsum"
-            ]
-        })
-
-        addQuestion({
-            urgent: 1,
-            question: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            answerCount: 3,
-            answers: [
-                "Contrary to popular belief",
-                "It is a long established fact",
-                "There are many variations of passages",
-                "The first line of Lorem Ipsum"
-            ]
-        })
-    </script>
 </html>
