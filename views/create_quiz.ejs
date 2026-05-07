@@ -86,6 +86,7 @@
     .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:var(--bg); padding:10px 20px; border-radius:99px; font-size:0.85rem; font-weight:500; opacity:0; transition:opacity 0.25s, transform 0.25s; pointer-events:none; }
     .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
+    .essay-note { background:rgba(90,78,232,0.06); border:1px solid rgba(90,78,232,0.2); border-radius:10px; padding:12px 14px; font-size:0.85rem; color:var(--muted); line-height:1.6; }
     @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
   </style>
 </head>
@@ -181,8 +182,9 @@
 
       <!-- Type toggle -->
       <div class="type-toggle">
-        <button class="type-btn active" id="mcq-btn-${id}"  onclick="setType(${id},'mcq')">Multiple Choice</button>
-        <button class="type-btn"        id="tf-btn-${id}"   onclick="setType(${id},'tf')">True / False</button>
+        <button class="type-btn active" id="mcq-btn-${id}"   onclick="setType(${id},'mcq')">Multiple Choice</button>
+        <button class="type-btn"        id="tf-btn-${id}"    onclick="setType(${id},'tf')">True / False</button>
+        <button class="type-btn"        id="essay-btn-${id}" onclick="setType(${id},'essay')">📝 Essay</button>
       </div>
 
       <!-- Question text -->
@@ -215,6 +217,13 @@
           <button class="tf-btn" id="tf-false-${id}" onclick="selectTF(${id},'False')">❌ False</button>
         </div>
         <input type="hidden" class="tf-correct" value=""/>
+      </div>
+
+      <!-- Essay -->
+      <div id="essay-opts-${id}" style="display:none">
+        <div class="essay-note">
+          📝 Students will write a free-text answer. You can review their responses manually.
+        </div>
       </div>`;
 
     list.appendChild(card);
@@ -240,22 +249,20 @@
 
   // ── Switch type MCQ ↔ TF ─────────────────────────────────
   window.setType = function(id, type) {
-    const mcqOpts = document.getElementById('mcq-opts-' + id);
-    const tfOpts  = document.getElementById('tf-opts-'  + id);
-    const mcqBtn  = document.getElementById('mcq-btn-'  + id);
-    const tfBtn   = document.getElementById('tf-btn-'   + id);
+    const mcqOpts   = document.getElementById('mcq-opts-'   + id);
+    const tfOpts    = document.getElementById('tf-opts-'    + id);
+    const essayOpts = document.getElementById('essay-opts-' + id);
+    const mcqBtn    = document.getElementById('mcq-btn-'    + id);
+    const tfBtn     = document.getElementById('tf-btn-'     + id);
+    const essayBtn  = document.getElementById('essay-btn-'  + id);
 
-    if (type === 'mcq') {
-      mcqOpts.style.display = '';
-      tfOpts.style.display  = 'none';
-      mcqBtn.classList.add('active');
-      tfBtn.classList.remove('active');
-    } else {
-      mcqOpts.style.display = 'none';
-      tfOpts.style.display  = '';
-      tfBtn.classList.add('active');
-      mcqBtn.classList.remove('active');
-    }
+    mcqOpts.style.display   = type === 'mcq'   ? '' : 'none';
+    tfOpts.style.display    = type === 'tf'    ? '' : 'none';
+    essayOpts.style.display = type === 'essay' ? '' : 'none';
+
+    mcqBtn.classList.toggle('active',   type === 'mcq');
+    tfBtn.classList.toggle('active',    type === 'tf');
+    essayBtn.classList.toggle('active', type === 'essay');
   };
 
   // ── True/False select ─────────────────────────────────────
