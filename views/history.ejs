@@ -324,7 +324,7 @@
 <script type="module">
   import { initializeApp }               from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, collection, query, where, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
   const app  = initializeApp({
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
@@ -347,14 +347,23 @@
     try {
       const q    = query(
         collection(db, 'results'),
-        where('userId', '==', uid),
-        orderBy('completedAt', 'desc')
+        where('userId', '==', uid)
       );
       const snap = await getDocs(q);
-      const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const results = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => {
+          // ترتيب من الأحدث للأقدم
+          const aTime = a.completedAt?.toMillis?.() || 0;
+          const bTime = b.completedAt?.toMillis?.() || 0;
+          return bTime - aTime;
+        });
       renderHistory(results);
     } catch(err) {
-      console.error(err);
+      console.error('Firestore error:', err);
+      document.getElementById('empty-state').style.display = 'flex';
+      document.querySelector('.empty-title').textContent = 'Error loading history';
+      document.querySelector('.empty-desc').textContent  = err.message;
     }
   }
 
