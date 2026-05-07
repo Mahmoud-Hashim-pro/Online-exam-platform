@@ -1,7 +1,7 @@
 #Online-exam-platform
 
 # Front:
-Node.js
+EJS
 
 # Back
-Express + EJS
+Node.js + Express
