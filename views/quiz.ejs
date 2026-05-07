@@ -262,7 +262,7 @@
 
     // ── حفظ النتيجة في Firestore ─────────────────────────
     try {
-      await addDoc(collection(db, 'results'), {
+      const resultData = {
         userId:      currentUser.uid,
         userName:    currentUser.displayName || currentUser.email,
         quizId:      quizId,
@@ -273,8 +273,12 @@
         percentage:  pct,
         passed,
         completedAt: serverTimestamp()
-      });
-    } catch(e) { console.error('Failed to save result:', e); }
+      };
+      const ref = await addDoc(collection(db, 'results'), resultData);
+      console.log('✅ Result saved with ID:', ref.id);
+    } catch(e) {
+      console.error('❌ Failed to save result:', e);
+    }
 
     // ── إظهار النتيجة ─────────────────────────────────────
     document.getElementById('quiz-ui').style.display = 'none';
