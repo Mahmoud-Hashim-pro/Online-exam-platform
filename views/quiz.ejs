@@ -121,7 +121,7 @@
 <script type="module">
   import { initializeApp }               from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { getFirestore, doc, getDoc }   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
   const firebaseConfig = {
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
@@ -139,12 +139,14 @@
   // جيب الـ quiz ID من الـ URL
   const quizId = window.location.pathname.split('/').pop();
 
-  let quiz      = null;
-  let current   = 0;
-  let answers   = {};
+  let quiz        = null;
+  let current     = 0;
+  let answers     = {};
+  let currentUser = null;
 
   onAuthStateChanged(auth, async user => {
     if (!user) { window.location.href = '/log'; return; }
+    currentUser = user;
     await loadQuiz();
   });
 
@@ -241,8 +243,7 @@
     }
   };
 
-  function showResult() {
-    // احسب بس الأسئلة اللي ليها إجابة صح (MCQ + TF)
+  async function showResult() {
     let score    = 0;
     let gradable = 0;
     let essayCount = 0;
@@ -256,21 +257,37 @@
       }
     });
 
-    const pct = gradable > 0 ? Math.round((score / gradable) * 100) : 0;
+    const pct  = gradable > 0 ? Math.round((score / gradable) * 100) : 0;
+    const passed = pct >= 50;
 
+    // ── حفظ النتيجة في Firestore ─────────────────────────
+    try {
+      await addDoc(collection(db, 'results'), {
+        userId:      currentUser.uid,
+        userName:    currentUser.displayName || currentUser.email,
+        quizId:      quizId,
+        quizTitle:   quiz.title,
+        score,
+        total:       gradable,
+        essayCount,
+        percentage:  pct,
+        passed,
+        completedAt: serverTimestamp()
+      });
+    } catch(e) { console.error('Failed to save result:', e); }
+
+    // ── إظهار النتيجة ─────────────────────────────────────
     document.getElementById('quiz-ui').style.display = 'none';
     document.getElementById('result').classList.add('show');
     document.getElementById('result-score').textContent =
       gradable > 0 ? `${score}/${gradable}` : '—';
 
-    let msg = pct >= 80 ? 'Excellent work!' :
-              pct >= 60 ? 'Good job!' :
-              pct >= 40 ? 'Keep practicing!' : 'Try again!';
+    let msg = pct >= 80 ? '🏆 Excellent work!' :
+              pct >= 60 ? '👍 Good job!' :
+              pct >= 40 ? '📚 Keep practicing!' : '💪 Try again!';
 
-    if (essayCount > 0) {
-      msg += `
-📝 ${essayCount} essay question${essayCount > 1 ? 's' : ''} will be reviewed manually.`;
-    }
+    if (essayCount > 0)
+      msg += ` · 📝 ${essayCount} essay will be reviewed manually.`;
 
     document.getElementById('result-msg').textContent = msg;
   }
