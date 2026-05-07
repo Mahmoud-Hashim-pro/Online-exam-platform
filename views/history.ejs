@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quizer â€” History</title>
+  <title>Quizer — History</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,7 +48,7 @@
       flex-direction: column;
     }
 
-    
+    /* ── Top Bar ── */
     .topbar {
       display: flex;
       align-items: center;
@@ -97,14 +97,14 @@
       background-clip: text;
     }
 
-  
+    /* ── Page ── */
     .page {
       max-width: 560px;
       margin: 0 auto;
       padding: 1.4rem 1.5rem 3rem;
     }
 
-  
+    /* ── Stats Row ── */
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -136,6 +136,7 @@
       letter-spacing: 0.5px;
     }
 
+    /* ── Section Title ── */
     .section-title {
       font-size: 0.72rem;
       font-weight: 600;
@@ -145,6 +146,7 @@
       margin-bottom: 10px;
     }
 
+    /* ── History List ── */
     .history-list {
       display: flex;
       flex-direction: column;
@@ -173,6 +175,7 @@
     }
     .quiz-card:active { transform: translateY(0); }
 
+    /* الشريط الجانبي اللي بيدل على النتيجة */
     .quiz-card::after {
       content: '';
       position: absolute;
@@ -185,6 +188,7 @@
     .quiz-card.win::after  { background: var(--win); }
     .quiz-card.lose::after { background: var(--lose); }
 
+    /* أيقونة نوع الـ quiz */
     .quiz-icon {
       width: 42px;
       height: 42px;
@@ -201,7 +205,7 @@
     .quiz-icon.sports   { background: rgba(242,116,116,0.12); }
     .quiz-icon.general  { background: rgba(130,130,160,0.12); }
 
-
+    /* Info */
     .quiz-info { flex: 1; min-width: 0; }
     .quiz-name {
       font-size: 0.92rem;
@@ -216,6 +220,7 @@
       color: var(--muted);
     }
 
+    /* Score Badge */
     .quiz-score {
       text-align: right;
       flex-shrink: 0;
@@ -232,6 +237,7 @@
       color: var(--muted);
     }
 
+    /* ── Empty State ── */
     .empty {flex-direction: column;
       text-align: center;
       padding: 3rem 1rem;
@@ -250,6 +256,7 @@
     .empty-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
     .empty-desc  { font-size: 0.8rem; }
 
+    /* ── Animations ── */
     .quiz-card {
       animation: fadeUp 0.3s ease both;
     }
@@ -274,6 +281,7 @@
 </head>
 <body>
 
+  <!-- Top Bar -->
   <div class="topbar">
     <a href="/home" class="back-btn">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -283,6 +291,7 @@
 
   <div class="page">
 
+    <!-- Stats - الأرقام دي هتيجي من الـ server -->
     <div class="stats">
       <div class="stat-card">
         <div class="stat-number accent" id="stat-total">0</div>
@@ -298,31 +307,26 @@
       </div>
     </div>
 
+    <!-- List -->
     <div class="section-title">Recent Quizzes</div>
 
     <div class="history-list" id="history-list">
+      <!-- الكروت هتتضاف هنا من الـ server -->
     </div>
 
+    <!-- Empty State -->
     <div class="empty" id="empty-state">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <div class="empty-title">No quizzes yet</div>
       <div class="empty-desc">Your quiz history will appear here</div>
     </div>
 
-    <script>
-      const list = document.getElementById('history-list');
-      const empty = document.getElementById('empty-state');
-      if (list.children.length > 0) {
-        empty.style.display = 'none';
-      }
-    </script>
-
-  </div>
-
 <script type="module">
-  import { initializeApp }        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { initializeApp }               from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  const _app  = initializeApp({
+  import { getFirestore, collection, query, where, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+  const app  = initializeApp({
     apiKey:            "AIzaSyC_bAMVqRFjheGjHOG0ycR6cXWd_wKG02g",
     authDomain:        "online-quiz-and-exam-platform.firebaseapp.com",
     projectId:         "online-quiz-and-exam-platform",
@@ -330,9 +334,83 @@
     messagingSenderId: "1090034589767",
     appId:             "1:1090034589767:web:7942c9175cb4b28bd25162"
   });
-  onAuthStateChanged(getAuth(_app), user => {
-    if (!user) window.location.href = '/log';
+
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { window.location.href = '/log'; return; }
+    await loadHistory(user.uid);
   });
+
+  async function loadHistory(uid) {
+    try {
+      const q    = query(
+        collection(db, 'results'),
+        where('userId', '==', uid),
+        orderBy('completedAt', 'desc')
+      );
+      const snap = await getDocs(q);
+      const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderHistory(results);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  function timeAgo(ts) {
+    if (!ts) return '';
+    const d    = ts.toDate ? ts.toDate() : new Date(ts);
+    const diff = Math.floor((Date.now() - d) / 1000);
+    if (diff < 60)   return 'Just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400)return Math.floor(diff/3600) + 'h ago';
+    return Math.floor(diff/86400) + 'd ago';
+  }
+
+  function renderHistory(results) {
+    const list  = document.getElementById('history-list');
+    const empty = document.getElementById('empty-state');
+
+    // Stats
+    const total  = results.length;
+    const wins   = results.filter(r => r.passed).length;
+    const losses = total - wins;
+    document.getElementById('stat-total').textContent  = total;
+    document.getElementById('stat-wins').textContent   = wins;
+    document.getElementById('stat-losses').textContent = losses;
+
+    if (total === 0) { empty.style.display = 'flex'; return; }
+    empty.style.display = 'none';
+    list.innerHTML = '';
+
+    const emojis = ['📚','🔬','🌍','🧠','🎓','💡','🏆','⚡'];
+
+    results.forEach((r, i) => {
+      const win  = r.passed;
+      const pct  = r.total > 0 ? Math.round((r.score / r.total) * 100) : null;
+
+      const card = document.createElement('a');
+      card.className = `quiz-card ${win ? 'win' : 'lose'}`;
+      card.href = `/quiz/${r.quizId}`;
+      card.innerHTML = `
+        <div class="quiz-icon general">${emojis[i % emojis.length]}</div>
+        <div class="quiz-info">
+          <div class="quiz-name">${r.quizTitle || 'Quiz'}</div>
+          <div class="quiz-meta">${timeAgo(r.completedAt)}${r.essayCount ? ' · ' + r.essayCount + ' essay' : ''}</div>
+        </div>
+        <div class="quiz-score">
+          <div class="score-num ${win ? 'win' : 'lose'}">
+            ${r.total > 0 ? r.score + '/' + r.total : '—'}
+          </div>
+          <div class="score-label">${pct !== null ? pct + '%' : 'Essay'}</div>
+        </div>`;
+      list.appendChild(card);
+    });
+  }
 </script>
+
+  </div>
+
 </body>
 </html>
